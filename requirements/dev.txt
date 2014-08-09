@@ -1,3 +1,7 @@
 -r base.txt
 
 django-debug-toolbar
+django-extensions
+jinja2
+pyzmq
+tornado

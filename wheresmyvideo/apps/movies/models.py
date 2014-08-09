@@ -6,10 +6,9 @@ import tmdbsimple as tmdb
 
 class Movie(models.Model):
     user = models.ForeignKey(User)
-    title = models.CharField(max_length=255)  # For searching & sorting
+    title = models.CharField(max_length=255)
     release_date = models.DateField(blank=True, null=True)
-    # https://www.themoviedb.org
-    tmdb_id = models.PositiveIntegerField(blank=True, null=True)
+    tmdb_id = models.PositiveIntegerField(unique=True)
     media_types = models.ManyToManyField('MediaType', blank=True, null=True)
     rating = models.CharField(max_length=5, blank=True, null=True)
     genres = models.ManyToManyField('Genre', blank=True, null=True)
@@ -29,15 +28,16 @@ class Movie(models.Model):
             obj = cls.objects.create(
                 user=user,
                 title=resp.get('title', 'No Title'),
-                release_date=resp.get('release_date'),
                 tmdb_id=tmdb_id,
                 tmdb_poster=resp.get('poster_path'),
             )
         else:
             obj.title = resp.get('title', 'No Title')
-            obj.release_date = resp.get('release_date')
             obj.tmdb_poster = resp.get('poster_path')
-            obj.save()
+
+        if resp.get('release_date'):
+            obj.release_date = resp.get('release_date')
+        obj.save()
         return obj
 
     @classmethod
@@ -47,10 +47,14 @@ class Movie(models.Model):
         resp = search.movie(query=query)
         return resp
 
+    @property
+    def thumbnail_url(self):
+        return 'http://image.tmdb.org/t/p/w92{}'.format(self.tmdb_poster)
+
     def __unicode__(self):
-        if self.year:
+        if self.release_date:
             return u'{} ({}) - [{}]'.format(
-                self.title, self.year, self.user.username)
+                self.title, self.release_date.year, self.user.username)
         else:
             return u'{} -[{}]'.format(self.title, self.user.username)
 

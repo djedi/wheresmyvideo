@@ -3,3 +3,5 @@
 .idea
 *.sqlite3
 simplify
+.ipynb_checkpoints
+Add movie.ipynb

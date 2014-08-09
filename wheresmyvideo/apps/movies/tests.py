@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+
 from . import models
 
 
@@ -14,6 +15,13 @@ class MovieTestCase(TestCase):
         self.assertEqual(matrix.release_date, '1999-03-30')
         self.assertEqual(matrix.tmdb_id, 603)
         self.assertEqual(matrix.tmdb_poster, '/gynBNzwyaHKtXqlEKKLioNkjKgN.jpg')
+
+    def test_add_tmdb_duplicate(self):
+        models.Movie.add_tmdb(603, self.user)
+        matrix = models.Movie.add_tmdb(603, self.user)
+        self.assertEqual(matrix.title, 'The Matrix')
+        self.assertEqual(models.Movie.objects.filter(
+            title='The Matrix').count(), 1)
 
     def test_search_tmdb(self):
         resp = models.Movie.search_tmdb('i dig dirt')

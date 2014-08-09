@@ -20,13 +20,25 @@ class Movie(models.Model):
         tmdb.API_KEY = settings.TMDB_API_KEY
         movie = tmdb.Movies(tmdb_id)
         resp = movie.info()
-        return cls.objects.create(
-            user=user,
-            title=resp.get('title', ''),
-            release_date=resp.get('release_date'),
-            tmdb_id=tmdb_id,
-            tmdb_poster=resp.get('poster_path'),
-        )
+        try:
+            obj = cls.objects.get(
+                user=user,
+                tmdb_id=tmdb_id,
+            )
+        except cls.DoesNotExist:
+            obj = cls.objects.create(
+                user=user,
+                title=resp.get('title', 'No Title'),
+                release_date=resp.get('release_date'),
+                tmdb_id=tmdb_id,
+                tmdb_poster=resp.get('poster_path'),
+            )
+        else:
+            obj.title = resp.get('title', 'No Title')
+            obj.release_date = resp.get('release_date')
+            obj.tmdb_poster = resp.get('poster_path')
+            obj.save()
+        return obj
 
     @classmethod
     def search_tmdb(cls, query):

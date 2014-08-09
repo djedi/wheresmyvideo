@@ -1,0 +1,19 @@
+cd ~/dev/
+mkvirtualenv wheresmyvideo_env
+pip install https://www.djangoproject.com/download/1.7c2/tarball/
+pip install ipython
+django-admin.py startproject wheresmyvideo
+cd wheresmyvideo
+mkdir requirements
+pip freeze > requirements/base.txt
+cd wheresmyvideo
+mkdir settings
+touch settings/__init__.py
+mv settings.py settings/base.py
+mkdir apps
+touch apps/__init__.py
+cd apps
+mkdir accounts movies
+touch accounts/__init__.py movies/__init__.py
+cd ../..
+charm .

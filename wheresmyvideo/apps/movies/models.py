@@ -20,7 +20,6 @@ class Movie(models.Model):
         tmdb.API_KEY = settings.TMDB_API_KEY
         movie = tmdb.Movies(tmdb_id)
         resp = movie.info()
-        print resp
         return cls.objects.create(
             user=user,
             title=resp.get('title', ''),
@@ -28,6 +27,13 @@ class Movie(models.Model):
             tmdb_id=tmdb_id,
             tmdb_poster=resp.get('poster_path'),
         )
+
+    @classmethod
+    def search_tmdb(cls, query):
+        tmdb.API_KEY = settings.TMDB_API_KEY
+        search = tmdb.Search()
+        resp = search.movie(query=query)
+        return resp
 
     def __unicode__(self):
         if self.year:

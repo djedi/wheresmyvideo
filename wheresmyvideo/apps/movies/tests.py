@@ -14,3 +14,10 @@ class MovieTestCase(TestCase):
         self.assertEqual(matrix.release_date, '1999-03-30')
         self.assertEqual(matrix.tmdb_id, 603)
         self.assertEqual(matrix.tmdb_poster, '/gynBNzwyaHKtXqlEKKLioNkjKgN.jpg')
+
+    def test_search_tmdb(self):
+        resp = models.Movie.search_tmdb('i dig dirt')
+        self.assertEqual(resp.get('total_results'), 1)
+        results = resp.get('results')
+        self.assertEqual(results[0].get('title', ''), 'I Dig Dirt')
+        self.assertEqual(results[0].get('id', 0), 285885)

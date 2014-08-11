@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from django.db import models
 import tmdbsimple as tmdb
 
+from common.models import TimeStampMixin
 
-class Movie(models.Model):
+
+class Movie(TimeStampMixin, models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=255)
     release_date = models.DateField(blank=True, null=True)
@@ -37,6 +39,9 @@ class Movie(models.Model):
 
         if resp.get('release_date'):
             obj.release_date = resp.get('release_date')
+
+        # TODO: Get genres
+        # TODO: Get rating
         obj.save()
         return obj
 

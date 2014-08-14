@@ -23,6 +23,16 @@ class MovieTestCase(TestCase):
         self.assertEqual(models.Movie.objects.filter(
             title='The Matrix').count(), 1)
 
+    def test_get_us_rating(self):
+        movie = models.Movie.objects.create(
+            title='The Matrix',
+            tmdb_id=603,
+        )
+        movie.get_us_rating()
+        self.assertEqual(movie.rating, 'R')
+        m2 = models.Movie.objects.first()
+        self.assertEqual(m2.rating, 'R')
+
     def test_search_tmdb(self):
         resp = models.Movie.search_tmdb('i dig dirt')
         self.assertEqual(resp.get('total_results'), 1)

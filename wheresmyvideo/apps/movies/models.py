@@ -19,8 +19,8 @@ class Movie(TimeStampMixin, models.Model):
     @classmethod
     def add_tmdb(cls, tmdb_id, user=None):
         tmdb.API_KEY = settings.TMDB_API_KEY
-        movie = tmdb.Movies(tmdb_id)
-        resp = movie.info()
+        tmdb_movie = tmdb.Movies(tmdb_id)
+        resp = tmdb_movie.info()
         try:
             obj = cls.objects.get(
                 tmdb_id=tmdb_id,
@@ -42,9 +42,26 @@ class Movie(TimeStampMixin, models.Model):
             obj.users.add(user)
 
         # TODO: Get genres
-        # TODO: Get rating
         obj.save()
+
+        # get rating
+        obj.get_us_rating(tmdb_movie)
+
         return obj
+
+    def get_us_rating(self, tmdb_movie=None):
+        will_save = False
+        if not tmdb_movie:
+            tmdb.API_KEY = settings.TMDB_API_KEY
+            tmdb_movie = tmdb.Movies(self.tmdb_id)
+            tmdb_movie.info()
+            will_save = True
+        tmdb_movie.releases()
+        for c in tmdb_movie.countries:
+            if c.get('iso_3166_1') == 'US':
+                self.rating = c.get('certification')
+        if will_save:
+            self.save()
 
     @classmethod
     def search_tmdb(cls, query):
@@ -55,7 +72,19 @@ class Movie(TimeStampMixin, models.Model):
 
     @property
     def thumbnail_url(self):
-        return 'http://image.tmdb.org/t/p/w92{}'.format(self.tmdb_poster)
+        return self.image_url(92)
+
+    @property
+    def medium_img_url(self):
+        return self.image_url(185)
+
+    @property
+    def large_img_url(self):
+        return self.image_url(396)
+
+    def image_url(self, width=92):
+        return 'https://image.tmdb.org/t/p/w{}{}'.format(
+            width, self.tmdb_poster)
 
     def __unicode__(self):
         if self.release_date:

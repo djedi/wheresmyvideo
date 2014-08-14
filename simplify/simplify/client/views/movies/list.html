@@ -1,5 +1,5 @@
 
-<div class="page page-table" data-ng-controller="tableCtrl">
+<div class="page page-table" data-ng-controller="movieListCtrl">
 
     <section class="panel panel-default table-dynamic">
         <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Your Movies</strong></div>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-sm-3 col-xs-6 filter-result-info">
                     <span>
-                        Showing {{filteredStores.length}}/{{stores.length}} entries
+                        Showing {{filteredStores.length}}/{{movieList.length}} entries
                     </span>              
                 </div>
             </div>
@@ -26,32 +26,15 @@
         <table class="table table-bordered table-striped table-responsive">
             <thead>
                 <tr>
+                    <th></th>
                     <th><div class="th">
-                        Store Name
+                        Title
                         <span class="fa fa-angle-up"
-                              data-ng-click=" order('name') "
-                              data-ng-class="{active: row == 'name'}"></span>
+                              data-ng-click=" order('title') "
+                              data-ng-class="{active: row == 'title'}"></span>
                         <span class="fa fa-angle-down"
-                              data-ng-click=" order('-name') "
-                              data-ng-class="{active: row == '-name'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Price
-                        <span class="fa fa-angle-up"
-                              data-ng-click=" order('price') "
-                              data-ng-class="{active: row == 'price'}"></span>
-                        <span class="fa fa-angle-down"
-                              data-ng-click=" order('-price') "
-                              data-ng-class="{active: row == '-price'}"></span>
-                    </div></th>
-                    <th><div class="th">
-                        Sales (in 7 days)
-                        <span class="fa fa-angle-up"
-                              data-ng-click=" order('sales') "
-                              data-ng-class="{active: row == 'sales'}"></span>
-                        <span class="fa fa-angle-down"
-                              data-ng-click=" order('-sales') "
-                              data-ng-class="{active: row == '-sales'}"></span>
+                              data-ng-click=" order('-title') "
+                              data-ng-class="{active: row == '-title'}"></span>
                     </div></th>
                     <th><div class="th">
                         Rating
@@ -65,11 +48,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="store in currentPageStores">
-                    <td>{{store.name}}</td>
-                    <td>{{store.price}}</td>
-                    <td>{{store.sales}}</td>
-                    <td>{{store.rating}}</td>
+                <tr data-ng-repeat="movie in filteredMovies">
+                    <td><img ng-src="{{ movie.thumbnail }}" alt="" title="{{ movie.title }}"></td>
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.rating }}</td>
                 </tr>
             </tbody>
         </table>

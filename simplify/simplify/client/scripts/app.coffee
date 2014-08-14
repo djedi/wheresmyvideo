@@ -62,7 +62,7 @@ angular.module('app', [
             setRoutes(route)
         )
         $routeProvider
-            .when('/', { redirectTo: '/dashboard'} )
+            .when('/', { redirectTo: '/movies/list'} )
             .when('/404', { templateUrl: 'views/pages/404.html'} )
             .otherwise( redirectTo: '/404' )
 ])

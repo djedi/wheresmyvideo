@@ -3,8 +3,22 @@
 angular.module('app.movies', [])
 
 .controller('movieListCtrl', [
-    '$scope', '$filter'
-    ($scope, $filter) ->
+    '$scope', '$filter', '$http'
+    ($scope, $filter, $http) ->
+        $scope.movieList = []
+        $scope.filteredMovies = []
+
+        $scope.getMovieList = ->
+            resp = $http.get('http://127.0.0.1:8002/api/v1/movies/')
+            resp.success((data)->
+                console.debug('movie list data')
+                console.debug(data)
+                $scope.movieList = data
+            )
+            resp.error((err)->
+                console.debug(err)
+            )
+
         # filter
         $scope.stores = [
             {name: 'Nijiya Market', price: '$$', sales: 292, rating: 4.0}
@@ -40,7 +54,7 @@ angular.module('app.movies', [])
         $scope.select = (page) ->
             start = (page - 1) * $scope.numPerPage
             end = start + $scope.numPerPage
-            $scope.currentPageStores = $scope.filteredStores.slice(start, end)
+            $scope.currentPageStores = $scope.filteredMovies.slice(start, end)
             # console.log start
             # console.log end
             # console.log $scope.currentPageStores
@@ -61,7 +75,7 @@ angular.module('app.movies', [])
 
 
         $scope.search = ->
-            $scope.filteredStores = $filter('filter')($scope.stores, $scope.searchKeywords)
+            $scope.filteredMovies = $filter('filter')($scope.movieList, $scope.searchKeywords)
             $scope.onFilterChange()
 
         # orderBy
@@ -69,7 +83,7 @@ angular.module('app.movies', [])
             if $scope.row == rowName
                 return
             $scope.row = rowName
-            $scope.filteredStores = $filter('orderBy')($scope.stores, rowName)
+            $scope.filteredMovies = $filter('orderBy')($scope.movieList, rowName)
             # console.log $scope.filteredStores
             $scope.onOrderChange()
 
@@ -81,9 +95,10 @@ angular.module('app.movies', [])
 
         # init
         init = ->
-            $scope.search()
-            $scope.select($scope.currentPage)
+            resp = $scope.getMovieList()
+            resp.success(->
+                $scope.search()
+                $scope.select($scope.currentPage)
+            )
         init()
-
-
 ])

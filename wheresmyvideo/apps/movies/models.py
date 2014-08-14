@@ -45,22 +45,20 @@ class Movie(TimeStampMixin, models.Model):
         obj.save()
 
         # get rating
-        obj.get_us_rating(tmdb_movie)
+        obj.get_us_rating(tmdb_movie, save=True)
 
         return obj
 
-    def get_us_rating(self, tmdb_movie=None):
-        will_save = False
+    def get_us_rating(self, tmdb_movie=None, save=False):
         if not tmdb_movie:
             tmdb.API_KEY = settings.TMDB_API_KEY
             tmdb_movie = tmdb.Movies(self.tmdb_id)
             tmdb_movie.info()
-            will_save = True
         tmdb_movie.releases()
         for c in tmdb_movie.countries:
             if c.get('iso_3166_1') == 'US':
                 self.rating = c.get('certification')
-        if will_save:
+        if save:
             self.save()
 
     @classmethod
@@ -88,7 +86,10 @@ class Movie(TimeStampMixin, models.Model):
 
     def __unicode__(self):
         if self.release_date:
-            return u'{} ({})'.format(self.title, self.release_date.year)
+            try:
+                return u'{} ({})'.format(self.title, self.release_date.year)
+            except AttributeError:
+                return self.title
         else:
             return self.title
 

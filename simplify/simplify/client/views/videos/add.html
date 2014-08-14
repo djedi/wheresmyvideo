@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-sm-4 col-xs-6">
                     <span>
-                        Showing {{ 20 * (currentPage - 1) + 1 }}-{{ (20 * (currentPage - 1)) + data.results.length }} of {{ data.total_results }} entries
+                        Showing {{ RESULTS_PER_PAGE * (currentPage - 1) + 1 }}-{{ (RESULTS_PER_PAGE * (currentPage - 1)) + data.results.length }} of {{ data.total_results }} entries
                     </span>
                 </div>
             </div>
@@ -63,7 +63,10 @@
                             <i class="ti-image"></i> No Image
                         </span>
                     </td>
-                    <td><strong>{{ video.title }}</strong></td>
+                    <td>
+                        <strong>{{ video.title }}</strong><br>
+                        <button class="btn btn-xs btn-primary" ng-click="addMovie(video.id)"><i class="ti-plus"></i>Add</button>
+                    </td>
                     <td>{{ video.release_date }}</td>
                 </tr>
             </tbody>
@@ -80,7 +83,7 @@
                                 total-items="data.total_results"
                                 max-size="4"
                                 ng-change="pageChanged()"
-                                items-per-page="20"
+                                items-per-page="RESULTS_PER_PAGE"
                                 rotate="false"
                                 previous-text="&lsaquo;" next-text="&rsaquo;"
                                 boundary-links="true"></pagination>

@@ -48,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="video in filteredVideos">
+                <tr data-ng-repeat="video in currentPageStores">
                     <td><img ng-src="{{ video.thumbnail }}" alt="" title="{{ video.title }}"></td>
                     <td>{{ video.title }}</td>
                     <td>{{ video.rating }}</td>

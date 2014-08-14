@@ -1,6 +1,7 @@
 'use strict'
 
 TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
+MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/movies/'
 
 angular.module('app.videos', [])
 
@@ -13,7 +14,7 @@ angular.module('app.videos', [])
         $scope.row = ''
 
         $scope.getMovieList = ->
-            resp = $http.get('http://127.0.0.1:8002/api/v1/movies/')
+            resp = $http.get(MOVIE_LIST_URL, {cache: true})
             resp.success((data)->
                 console.debug('video list data')
                 console.debug(data)
@@ -27,9 +28,9 @@ angular.module('app.videos', [])
             start = (page - 1) * $scope.numPerPage
             end = start + $scope.numPerPage
             $scope.currentPageStores = $scope.filteredVideos.slice(start, end)
-            # console.log start
-            # console.log end
-            # console.log $scope.currentPageStores
+#            console.log start
+#            console.log end
+#            console.log $scope.currentPageStores
 
         # on page change: change numPerPage, filtering string
         $scope.onFilterChange = ->
@@ -75,8 +76,8 @@ angular.module('app.videos', [])
 ])
 
 .controller('videoSearchCtrl', [
-    '$scope', 'TmdbService'
-    ($scope, TmdbService) ->
+    '$scope', 'TmdbService', 'logger', '$http', '$cacheFactory'
+    ($scope, TmdbService, logger, $http, $cacheFactory) ->
         $scope.query = ''
         $scope.searchMsg = null
         $scope.data = {
@@ -84,6 +85,7 @@ angular.module('app.videos', [])
             total_results: 0
         }
         $scope.currentPage = 1
+        $scope.RESULTS_PER_PAGE = 20  # tmdb constant, can't really change this
 
         $scope.search = (query) ->
             if query
@@ -111,6 +113,18 @@ angular.module('app.videos', [])
             }, (data)->
                 $scope.searchMsg = null
                 $scope.data = data
+            )
+
+        $scope.addMovie = (tmdb_id)->
+            url = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
+            resp = $http.post(url, {id: tmdb_id})
+            resp.success((data) ->
+                logger.logSuccess(data.movie.title + ' added successfully.')
+                $httpDefaultCache = $cacheFactory.get('$http')
+                $httpDefaultCache.remove(MOVIE_LIST_URL)
+            )
+            resp.error((err) ->
+                console.debug('Error adding movie')
             )
 ])
 

@@ -12,7 +12,7 @@ angular.module('app.auth', [])
     userSet: 'auth-user-set',
 })
 
-.factory('AuthService', ($http, logger, $window, $rootScope, AUTH_EVENTS) ->
+.factory('AuthService', ($http, logger, $window, $rootScope, AUTH_EVENTS, $cacheFactory) ->
     authService = {
         name: null
     }
@@ -45,6 +45,8 @@ angular.module('app.auth', [])
             logger.logSuccess(data.success)
             $window.sessionStorage.clear()
             $rootScope.$broadcast(AUTH_EVENTS.userSet)
+            $httpDefaultCache = $cacheFactory.get('$http')
+            $httpDefaultCache.removeAll()
         )
         resp.error((data)->
             console.debug('LOG OUT ERROR')

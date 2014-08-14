@@ -21,7 +21,9 @@ angular.module('app.controllers', [])
 
         $scope.$on(AUTH_EVENTS.notAuthenticated, ->
             console.log('AppCtrl NOT AUTHENTICATED')
-            $location.path('pages/signin')
+            path = $location.path()
+            if not (/^\/auth/).test(path) and not (/^\/public/).test(path)
+                $location.path('/auth/login')
         )
 
         $scope.main =
@@ -33,7 +35,7 @@ angular.module('app.controllers', [])
         $scope.logout = ->
             resp = AuthService.logout()
             resp.success(->
-                $location.path('/pages/signin')
+                $location.path('/auth/login')
             )
 
         $scope.pageTransitionOpts = [

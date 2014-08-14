@@ -44,6 +44,7 @@ angular.module('app.auth', [])
         resp.success((data)->
             logger.logSuccess(data.success)
             $window.sessionStorage.clear()
+            $rootScope.$broadcast(AUTH_EVENTS.userSet)
         )
         resp.error((data)->
             console.debug('LOG OUT ERROR')
@@ -131,36 +132,35 @@ angular.module('app.auth', [])
 )
 
 .controller('SignUpCtrl', [
-    '$scope', '$http'
-    ($scope, $http) ->
-        $scope.foo = 'bar'
-        $scope.signUp = ->
+    '$scope', '$rootScope', '$http', 'AUTH_EVENTS', 'AuthService', 'logger', '$location'
+    ($scope, $rootScope, $http, AUTH_EVENTS, AuthService, logger, $location) ->
+        $scope.credentials = {
+            username: '',
+            password: '',
+            email: '',
+        }
+        $scope.signUp = (credentials)->
             url = 'http://127.0.0.1:8002/rest-auth/register/'
             resp = $http.post(url, {
-                username: $scope.username,
-                email: $scope.email,
-                password: $scope.password,
+                username: credentials.username,
+                email: credentials.email,
+                password: credentials.password,
             })
             resp.success((data) ->
                 console.debug(data)
-                if data.username == $scope.username
-                    $scope.logIn()
+                resp1 = AuthService.login(credentials)
+                resp1.success(->
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess)
+                    $location.path('/')
+                )
+                resp1.error(->
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed)
+                )
             )
             resp.error((error) ->
                 console.debug('ERROR')
                 console.debug(error)
-            )
-        $scope.logIn = ->
-            url = 'http://127.0.0.1:8002/rest-auth/login/'
-            resp = $http.post(url, {
-                username: $scope.username,
-                password: $scope.password,
-            })
-            resp.success((data) ->
-                window.location.href = '/dashboard'
-            )
-            resp.error((data) ->
-                console.log('ERROR LOGGING IN')
+                logger.logError(error.user.username)
             )
 ])
 .controller('SignInCtrl', [

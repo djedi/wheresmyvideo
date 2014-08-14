@@ -25,6 +25,7 @@ angular.module('app', [
     'app.form.validation'
     'app.ui.form.ctrls'
     'app.ui.form.directives'
+    'app.movies'
     'app.tables'
     'app.task'
     'app.chart.ctrls'
@@ -37,6 +38,8 @@ angular.module('app', [
     ($routeProvider) ->
 
         routes = [
+            'auth/login', 'auth/register', 'auth/forgot-password',
+            'movies/list',
             'dashboard'
             'ui/typography', 'ui/buttons', 'ui/icons', 'ui/grids', 'ui/widgets', 'ui/components', 'ui/boxes', 'ui/timeline', 'ui/nested-lists', 'ui/pricing-tables', 'ui/maps'
             'tables/static', 'tables/dynamic', 'tables/responsive'

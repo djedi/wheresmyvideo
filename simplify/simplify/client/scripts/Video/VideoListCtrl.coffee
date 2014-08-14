@@ -1,21 +1,21 @@
 'use strict'
 
-angular.module('app.movies', [])
+angular.module('app.videos', [])
 
-.controller('movieListCtrl', [
+.controller('videoListCtrl', [
     '$scope', '$filter', '$http'
     ($scope, $filter, $http) ->
-        $scope.movieList = []
-        $scope.filteredMovies = []
+        $scope.videos = []
+        $scope.filteredVideos = []
         $scope.searchKeywords = ''
         $scope.row = ''
 
         $scope.getMovieList = ->
             resp = $http.get('http://127.0.0.1:8002/api/v1/movies/')
             resp.success((data)->
-                console.debug('movie list data')
+                console.debug('video list data')
                 console.debug(data)
-                $scope.movieList = data
+                $scope.videos = data
             )
             resp.error((err)->
                 console.debug(err)
@@ -24,7 +24,7 @@ angular.module('app.movies', [])
         $scope.select = (page) ->
             start = (page - 1) * $scope.numPerPage
             end = start + $scope.numPerPage
-            $scope.currentPageStores = $scope.filteredMovies.slice(start, end)
+            $scope.currentPageStores = $scope.filteredVideos.slice(start, end)
             # console.log start
             # console.log end
             # console.log $scope.currentPageStores
@@ -45,7 +45,7 @@ angular.module('app.movies', [])
 
 
         $scope.search = ->
-            $scope.filteredMovies = $filter('filter')($scope.movieList, $scope.searchKeywords)
+            $scope.filteredVideos = $filter('filter')($scope.videos, $scope.searchKeywords)
             $scope.onFilterChange()
 
         # orderBy
@@ -53,7 +53,7 @@ angular.module('app.movies', [])
             if $scope.row == rowName
                 return
             $scope.row = rowName
-            $scope.filteredMovies = $filter('orderBy')($scope.movieList, rowName)
+            $scope.filteredVideos = $filter('orderBy')($scope.videos, rowName)
             $scope.onOrderChange()
 
         # pagination

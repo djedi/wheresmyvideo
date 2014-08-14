@@ -25,7 +25,7 @@ angular.module('app', [
     'app.form.validation'
     'app.ui.form.ctrls'
     'app.ui.form.directives'
-    'app.movies'
+    'app.videos'
     'app.tables'
     'app.task'
     'app.chart.ctrls'
@@ -39,7 +39,7 @@ angular.module('app', [
 
         routes = [
             'auth/login', 'auth/register', 'auth/forgot-password',
-            'movies/list',
+            'videos/list', 'videos/add',
             'dashboard'
             'ui/typography', 'ui/buttons', 'ui/icons', 'ui/grids', 'ui/widgets', 'ui/components', 'ui/boxes', 'ui/timeline', 'ui/nested-lists', 'ui/pricing-tables', 'ui/maps'
             'tables/static', 'tables/dynamic', 'tables/responsive'
@@ -62,7 +62,7 @@ angular.module('app', [
             setRoutes(route)
         )
         $routeProvider
-            .when('/', { redirectTo: '/movies/list'} )
+            .when('/', { redirectTo: '/videos/list'} )
             .when('/404', { templateUrl: 'views/pages/404.html'} )
             .otherwise( redirectTo: '/404' )
 ])

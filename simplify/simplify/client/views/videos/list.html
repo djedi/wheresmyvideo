@@ -1,8 +1,8 @@
 
-<div class="page page-table" data-ng-controller="movieListCtrl">
+<div class="page page-table" data-ng-controller="videoListCtrl">
 
     <section class="panel panel-default table-dynamic">
-        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Your Movies</strong></div>
+        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Your Videos</strong></div>
 
         <div class="table-filters">
             <div class="row">
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-sm-3 col-xs-6 filter-result-info">
                     <span>
-                        Showing {{filteredStores.length}}/{{movieList.length}} entries
+                        Showing {{filteredVideos.length}}/{{videos.length}} entries
                     </span>              
                 </div>
             </div>
@@ -48,10 +48,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="movie in filteredMovies">
-                    <td><img ng-src="{{ movie.thumbnail }}" alt="" title="{{ movie.title }}"></td>
-                    <td>{{ movie.title }}</td>
-                    <td>{{ movie.rating }}</td>
+                <tr data-ng-repeat="video in filteredVideos">
+                    <td><img ng-src="{{ video.thumbnail }}" alt="" title="{{ video.title }}"></td>
+                    <td>{{ video.title }}</td>
+                    <td>{{ video.rating }}</td>
                 </tr>
             </tbody>
         </table>

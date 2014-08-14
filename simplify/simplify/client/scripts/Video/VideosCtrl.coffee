@@ -1,5 +1,7 @@
 'use strict'
 
+TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
+
 angular.module('app.videos', [])
 
 .controller('videoListCtrl', [
@@ -71,3 +73,64 @@ angular.module('app.videos', [])
             )
         init()
 ])
+
+.controller('videoSearchCtrl', [
+    '$scope', 'TmdbService'
+    ($scope, TmdbService) ->
+        $scope.query = ''
+        $scope.searchMsg = null
+        $scope.data = {
+            results: []
+            total_results: 0
+        }
+        $scope.currentPage = 1
+
+        $scope.search = (query) ->
+            if query
+                $scope.currentPage = 1
+                $scope.searchMsg = 'Searching for "' + query + '"...'
+                TmdbService.get({
+                    method: 'search',
+                    what: 'movie',
+                    query: query,
+                    page: $scope.currentPage,
+                }, (data)->
+                    console.debug(data)
+                    $scope.searchMsg = null
+                    $scope.data = data
+                )
+
+        $scope.pageChanged = ->
+            $scope.data.results = []
+            $scope.searchMsg = 'Loading new page...'
+            TmdbService.get({
+                method: 'search',
+                what: 'movie',
+                query: $scope.query,
+                page: $scope.currentPage,
+            }, (data)->
+                $scope.searchMsg = null
+                $scope.data = data
+            )
+])
+
+.factory({
+    TmdbService: [
+        '$resource',
+        ($resource) ->
+            url = 'http://api.themoviedb.org/3/:method/:what'
+            return $resource(url,
+                {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
+                {get: {method: 'JSONP', requestType: 'json'}}
+            )
+    ]
+})
+
+#.factory('TmdbService', ($resource) ->
+#    url = 'http://api.themoviedb.org/3/:method/:what'
+#    return $resource(url,
+#        {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
+#        {get: {method: 'JSONP', requestType: 'json'}}
+#    )
+#)
+

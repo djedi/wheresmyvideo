@@ -1,10 +1,92 @@
-<div class="page">
+<div class="page" data-ng-controller="videoSearchCtrl">
 
     <section class="panel panel-default">
         <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Add Videos</strong></div>
         <div class="panel-body">
-            <p>Content goes here</p>
+            <p>Search for a movie</p>
+            <form ng-submit="search(query)">
+                <input type="text" ng-model="query" placeholder="Search..."><button class="btn btn-primary">Search</button>
+            </form>
+            <div ng-show="searchMsg">
+                <progressbar class="progressbar-sm progress-rounded progress-striped active" value="100">{{ searchMsg }}</progressbar>
+            </div>
+            <div ng-if="data.page == 1 && data.total_results == 0 && !searchMsg">
+                No results found
+            </div>
         </div>
+    </section>
+
+    <section class="panel panel-default table-dynamic" ng-show="data.results">
+        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Search Results</strong></div>
+
+        <div class="table-filters">
+            <div class="row">
+                <div class="col-sm-4 col-xs-6">
+                    <span>
+                        Showing {{ 20 * (currentPage - 1) + 1 }}-{{ (20 * (currentPage - 1)) + data.results.length }} of {{ data.total_results }} entries
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><div class="th">
+                        Title
+                        <span class="fa fa-angle-up"
+                              data-ng-click=" order('title') "
+                              data-ng-class="{active: row == 'title'}"></span>
+                        <span class="fa fa-angle-down"
+                              data-ng-click=" order('-title') "
+                              data-ng-class="{active: row == '-title'}"></span>
+                    </div></th>
+                    <th><div class="th">
+                        Release Date
+                        <span class="fa fa-angle-up"
+                              data-ng-click=" order('release_date') "
+                              data-ng-class="{active: row == 'release_date'}"></span>
+                        <span class="fa fa-angle-down"
+                              data-ng-click=" order('-release_date') "
+                              data-ng-class="{active: row == '-release_date'}"></span>
+                    </div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="video in data.results">
+                    <td>
+                        <span ng-if="video.poster_path">
+                            <img ng-src="https://image.tmdb.org/t/p/w92{{ video.poster_path }}" alt="" title="{{ video.title }}">
+                        </span>
+                        <span ng-if="!video.poster_path">
+                            <i class="ti-image"></i> No Image
+                        </span>
+                    </td>
+                    <td><strong>{{ video.title }}</strong></td>
+                    <td>{{ video.release_date }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <footer class="table-footer">
+            <div class="row">
+                <div class="col-md-6 page-num-info">
+
+                </div>
+                <div class="col-md-6 text-right pagination-container">
+                    <pagination class="pagination-sm"
+                                ng-model="currentPage"
+                                total-items="data.total_results"
+                                max-size="4"
+                                ng-change="pageChanged()"
+                                items-per-page="20"
+                                rotate="false"
+                                previous-text="&lsaquo;" next-text="&rsaquo;"
+                                boundary-links="true"></pagination>
+                </div>
+            </div>
+        </footer>
     </section>
 
 </div>

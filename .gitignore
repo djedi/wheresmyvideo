@@ -2,7 +2,5 @@
 .DS_Store
 .idea
 *.sqlite3
-simplify
 .ipynb_checkpoints
-Add movie.ipynb
-tmdb.ipynb
+*.ipynb

@@ -1,0 +1,26 @@
+
+// Layout
+$boxed_layout_width:    1200px;
+$screen-sm-max:         ($screen-sm - 1);
+
+// Top header
+$header_height:             60px;
+$header_container_bg:       $dark;
+$header-border:             rgba(255,255,255,.06);
+$header_link_color:         #aaa;
+
+// Main container
+$main_container_bg:         #eaeaea;
+
+// Sidebar, default is vertical
+$sidebar_bg:                #eee;
+$sub_nav_bg:                darken($sidebar_bg, 5%);
+$link_color:                $text-color;
+$link_active_bg:            $brand-primary;
+$link_active_color:         $bright;
+
+$horizontal_sidebar_bg:                #eee;
+$horizontal_sub_nav_bg:                darken($horizontal_sidebar_bg, 5%);
+$horizontal_link_color:                $text-color;
+$horizontal_link_active_bg:            darken($horizontal_sidebar_bg, 5%);
+$horizontal_link_active_color:         $brand-primary;

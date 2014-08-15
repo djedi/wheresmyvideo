@@ -1,14 +1,14 @@
 
-<div class="page page-profile">
+<div class="page page-profile" ng-controller="profileCtrl">
 
     <div class="row">
+        <div class="col-md-3"></div>
         <div class="col-md-6">
 
             <section class="panel panel-box">
                 <div class="panel-top bg-primary">
                     <div class="text-center">
-                        <h3>{{main.name}}</h3>
-                        <p>Project Manager</p> 
+                        <h3>{{ main.name }}</h3>
                     </div>
                     <div class="divider divider-xl"></div>
                 </div>
@@ -18,22 +18,25 @@
                 <div class="list-justified-container">
                     <ul class="list-justified text-center">
                         <li>
-                            <p class="size-h3">679</p>
-                            <p class="text-muted">Tweets</p>
+                            <p class="size-h3">{{ data.video_count }}</p>
+                            <p class="text-muted">
+                                <i class="ti-video-clapper"></i>
+                                Videos
+                            </p>
                         </li>
                         <li>
-                            <p class="size-h3">575</p>
-                            <p class="text-muted">Followers</p>
+                            <p class="size-h3">{{ data.wish_count }}</p>
+                            <p class="text-muted">
+                                <i class="ti-bookmark"></i>
+                                Wish List
+                            </p>
                         </li>
-                        <li>
-                            <p class="size-h3">23</p>
-                            <p class="text-muted">Following</p>
-                        </li>
+
                     </ul>
                 </div>
             </section>
 
-            <div class="row">
+            <div class="row" ng-if="false">
                 <div class="col-sm-6">
                     <div class="panel mini-box">
                         <span class="btn-icon btn-icon-round btn-icon-lg-alt bg-danger">
@@ -57,7 +60,7 @@
                     </div>                    
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-if="false">
                 <div class="col-sm-6">
                     <div class="panel mini-box">
                         <span class="btn-icon btn-icon-round btn-icon-lg-alt bg-success">
@@ -82,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" ng-if="false">
                 <div class="col-sm-6">
                     <section class="panel panel-box">
                         <div class="panel-top bg-facebook">
@@ -135,28 +138,13 @@
                             <ul class="list-unstyled list-info">
                                 <li>
                                     <span class="icon glyphicon glyphicon-user"></span>
-                                    <label>User name</label>
-                                    {{main.name}}
+                                    <label>Name</label>
+                                    {{ main.name }}
                                 </li>
                                 <li>
                                     <span class="icon glyphicon glyphicon-envelope"></span>
                                     <label>Email</label>
-                                    name@example.com
-                                </li>
-                                <li>
-                                    <span class="icon glyphicon glyphicon-home"></span>
-                                    <label>Address</label>
-                                    Street 123, Avenue 45, Country
-                                </li>
-                                <li>
-                                    <span class="icon glyphicon glyphicon-earphone"></span>
-                                    <label>Contact</label>
-                                    (+012) 345 6789
-                                </li>
-                                <li>
-                                    <span class="icon glyphicon glyphicon-flag"></span>
-                                    <label>Nationality</label>
-                                    Australia
+                                    {{ main.email }}
                                 </li>
                             </ul>
                             
@@ -164,9 +152,9 @@
                     </div>
                 </div>
             </div>
-          
         </div>
-        <div class="col-md-6">
+
+        <div class="col-md-6" ng-if="false">
 
             <div class="ui-timline-container ui-timline-left">
                 <section class="ui-timeline">

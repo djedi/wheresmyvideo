@@ -35,6 +35,14 @@ angular.module('app.auth', [])
             console.debug(data)
             if data.error
                 logger.logError(data.error)
+            if data.detail
+                if data.detail == 'Invalid token'
+                    $window.sessionStorage.clear()
+                    logger.logError('You had an invalid token in your session
+                        cache. It has been removed. Please try to log in again.')
+                else
+                    logger.logError(data.detail)
+
         )
         return resp
 

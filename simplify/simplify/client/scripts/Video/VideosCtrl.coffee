@@ -2,6 +2,7 @@
 
 TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
 MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/movies/'
+ADD_TMDB_MOVIE_URL = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
 
 angular.module('app.videos', [])
 
@@ -116,8 +117,7 @@ angular.module('app.videos', [])
             )
 
         $scope.addMovie = (tmdb_id)->
-            url = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
-            resp = $http.post(url, {id: tmdb_id})
+            resp = $http.post(ADD_TMDB_MOVIE_URL, {id: tmdb_id})
             resp.success((data) ->
                 logger.logSuccess(data.movie.title + ' added successfully.')
                 $httpDefaultCache = $cacheFactory.get('$http')

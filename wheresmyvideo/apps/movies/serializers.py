@@ -11,3 +11,9 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Movie
         exclude = ('users',)
+
+
+class MediaTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MediaType
+        exclude = ('users',)

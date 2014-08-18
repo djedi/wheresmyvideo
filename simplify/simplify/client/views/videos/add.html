@@ -1,11 +1,20 @@
 <div class="page" data-ng-controller="videoSearchCtrl">
 
     <section class="panel panel-default">
-        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> Add Videos</strong></div>
+        <div class="panel-heading"><strong><span class="ti-plus"></span> Add Videos</strong></div>
         <div class="panel-body">
             <p>Search for a movie</p>
             <form ng-submit="search(query)">
-                <input type="text" ng-model="query" placeholder="Search..."><button class="btn btn-primary">Search</button>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="query" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Search</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </form>
             <div ng-show="searchMsg">
                 <progressbar class="progressbar-sm progress-rounded progress-striped active" value="100">{{ searchMsg }}</progressbar>

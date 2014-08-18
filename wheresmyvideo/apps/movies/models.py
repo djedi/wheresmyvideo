@@ -99,6 +99,7 @@ class MediaType(models.Model):
     Types of media/location such as DVD, Amazon Prime, iTunes, etc.
     """
     name = models.CharField(max_length=100)
+    users = models.ManyToManyField(User, blank=True, null=True)
 
     def __unicode__(self):
         return self.name

@@ -17,6 +17,7 @@ angular.module('app.controllers', [])
             $scope.currentUser = AuthService.getName()
             $scope.main.name = AuthService.getName()
             $scope.main.email = AuthService.getEmail()
+            $scope.main.sesssion = AuthService.getSession()
         )
 
         $scope.$on(AUTH_EVENTS.notAuthenticated, ->
@@ -28,9 +29,11 @@ angular.module('app.controllers', [])
 
         $scope.main =
             brand: 'Where\'s My Video?'
+            user: {}
             name: AuthService.getName()
             email: AuthService.getEmail()
             isAuthorized: AuthService.isAuthenticated
+            mediaTypes: []
 
         $scope.logout = ->
             resp = AuthService.logout()

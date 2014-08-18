@@ -1,5 +1,7 @@
 'use strict';
 
+USER_DETAILS_URL = 'http://127.0.0.1:8002/api/v1/user/'
+
 angular.module('app.auth', [])
 
 .constant('AUTH_EVENTS', {
@@ -31,17 +33,21 @@ angular.module('app.auth', [])
                 logger.logError('Sorry, there was a problem logging in.')
         )
         resp.error((data) ->
-            console.log('ERROR LOGGING IN')
-            console.debug(data)
+            reported = false
             if data.error
                 logger.logError(data.error)
+                reported = true
             if data.detail
                 if data.detail == 'Invalid token'
                     $window.sessionStorage.clear()
                     logger.logError('You had an invalid token in your session
                         cache. It has been removed. Please try to log in again.')
+                    reported = true
                 else
                     logger.logError(data.detail)
+                    reported = true
+            if not reported
+                logger.logError('Sorry, there was an error trying to log you in.')
 
         )
         return resp
@@ -63,20 +69,17 @@ angular.module('app.auth', [])
         return resp
 
     authService.getUser = ->
-        resp = $http.get('http://127.0.0.1:8002/rest-auth/user/')
+        resp = $http.get(USER_DETAILS_URL)
         resp.success((data) ->
             $window.sessionStorage.username = data.username
             $window.sessionStorage.email = data.email
             $window.sessionStorage.first_name = data.first_name
             $window.sessionStorage.last_name = data.last_name
-            if data.first_name && data.last_name
-                name = data.first_name + " " + data.last_name
-            else if data.first_name
-                name = data.first_name
-            else
-                name = data.username
-            $window.sessionStorage.name = name
-            authService.name = name
+            $window.sessionStorage.name = data.display_name
+            $window.sessionStorage.video_count = data.video_count
+            $window.sessionStorage.wish_count = data.wish_count or 0
+            $window.sessionStorage.media_types = data.media_types
+            authService.name = data.display_name
             $rootScope.$broadcast(AUTH_EVENTS.userSet)
         )
         resp.error(->
@@ -93,35 +96,17 @@ angular.module('app.auth', [])
     authService.getEmail = ->
         return $window.sessionStorage.email
 
+    authService.getSession = ->
+        return $window.sessionStorage
+
     return authService
 )
 
 .run(($rootScope, AUTH_EVENTS, AuthService, $location) ->
     $rootScope.$on('$routeChangeSuccess', (event, next) ->
-        console.debug('route changed')
-        console.debug(AuthService.isAuthenticated())
         if not AuthService.isAuthenticated()
             $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated)
     )
-)
-
-.config(($httpProvider) ->
-    $httpProvider.interceptors.push([
-        '$injector', ($injector) ->
-            return $injector.get('AuthInterceptor')
-    ])
-)
-.factory('AuthInterceptor', ($rootScope, $q, AUTH_EVENTS) ->
-    return {
-        responseError: (response) ->
-            $rootScope.$broadcast({
-                401: AUTH_EVENTS.notAuthenticated,
-                403: AUTH_EVENTS.notAuthorized,
-                419: AUTH_EVENTS.sessionTimeout,
-                440: AUTH_EVENTS.sessionTimeout,
-            }[response.status], response)
-            return $q.reject(response)
-    }
 )
 
 .factory('authInterceptor', ($rootScope, $q, $window) ->

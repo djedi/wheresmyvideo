@@ -3,6 +3,8 @@
 TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
 MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/movies/'
 ADD_TMDB_MOVIE_URL = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
+SET_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/set/'
+USER_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/user-set/'
 
 angular.module('app.videos', [])
 
@@ -17,8 +19,8 @@ angular.module('app.videos', [])
         $scope.getMovieList = ->
             resp = $http.get(MOVIE_LIST_URL, {cache: true})
             resp.success((data)->
-                console.debug('video list data')
-                console.debug(data)
+                #console.debug('video list data')
+                #console.debug(data)
                 $scope.videos = data
             )
             resp.error((err)->
@@ -128,23 +130,59 @@ angular.module('app.videos', [])
             )
 ])
 
-.factory({
-    TmdbService: [
-        '$resource',
-        ($resource) ->
-            url = 'http://api.themoviedb.org/3/:method/:what'
-            return $resource(url,
-                {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
-                {get: {method: 'JSONP', requestType: 'json'}}
+#.factory({
+#    TmdbService: [
+#        '$resource',
+#        ($resource) ->
+#            url = 'http://api.themoviedb.org/3/:method/:what'
+#            return $resource(url,
+#                {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
+#                {get: {method: 'JSONP', requestType: 'json'}}
+#            )
+#    ]
+#})
+
+.factory('TmdbService', ($resource) ->
+    url = 'http://api.themoviedb.org/3/:method/:what'
+    return $resource(url,
+        {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
+        {get: {method: 'JSONP', requestType: 'json'}}
+    )
+)
+
+.controller('mediaTypesCtrl', [
+    '$scope', '$http', '$window'
+    ($scope, $http, $window) ->
+        $scope.foo = 'bar'
+        $scope.mediaTypes = []
+        $scope.selectedTypes = $window.sessionStorage.media_types.split(',').map((x)->parseInt(x))
+        #console.debug($scope.selectedTypes)
+
+        $scope.getMediaTypes = ->
+            resp = $http.get(MEDIA_TYPES_URL, {cache: true})
+            resp.success((data)->
+                $scope.mediaTypes = data
+                #console.debug(data)
             )
-    ]
-})
+            resp.error(->
+                console.error('getMediaTypes Error')
+            )
 
-#.factory('TmdbService', ($resource) ->
-#    url = 'http://api.themoviedb.org/3/:method/:what'
-#    return $resource(url,
-#        {api_key: TMDB_API_KEY, callback: 'JSON_CALLBACK'},
-#        {get: {method: 'JSONP', requestType: 'json'}}
-#    )
-#)
+        $scope.toggleSelection = (id) ->
+            idx = $scope.selectedTypes.indexOf(id)
+            if idx > -1  # already in list, remove it
+                $scope.selectedTypes.splice(idx, 1)
+            else  # add it to the list
+                $scope.selectedTypes.push(id)
+            resp = $http.post(SET_MEDIA_TYPES_URL, {type_ids: $scope.selectedTypes})
+            resp.success((data)->)
+            resp.error(->
+                console.error('toggleSelection Error')
+            )
+            $window.sessionStorage.media_types = $scope.selectedTypes
+            #console.debug($scope.selectedTypes)
 
+        init = ->
+            $scope.getMediaTypes()
+        init()
+])

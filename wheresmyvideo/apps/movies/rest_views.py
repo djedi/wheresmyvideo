@@ -6,14 +6,13 @@ from . import models
 from . import serializers
 
 
+MOVIES_PER_PAGE = 20
+
+
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = models.Movie.objects.all()
     serializer_class = serializers.MovieSerializer
-
-    def get_queryset(self):
-        qs = models.Movie.objects.filter(
-            users__in=[self.request.user]).order_by('title')
-        return qs
+    paginate_by = MOVIES_PER_PAGE
 
 
 @api_view(['POST'])
@@ -49,3 +48,13 @@ def set_user_media_types(request):
 def get_user_media_type_ids(request):
     type_ids = request.user.mediatype_set.all().values_list('id', flat=True)
     return Response({'type_ids': type_ids})
+
+
+class UserMovieViewSet(viewsets.ModelViewSet):
+    queryset = models.UserMovie.objects.select_related(
+        'movie', 'media_types').all()
+    serializer_class = serializers.UserMovieSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(user=self.request.user)
+        return queryset.order_by('movie__title')

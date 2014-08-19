@@ -1,7 +1,7 @@
 'use strict'
 
 TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
-MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/movies/'
+MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/user-movies/'
 ADD_TMDB_MOVIE_URL = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
 SET_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/set/'
 USER_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/user-set/'
@@ -15,8 +15,18 @@ angular.module('app.videos', [])
         $scope.filteredVideos = []
         $scope.searchKeywords = ''
         $scope.row = ''
+        $scope.allMediaTypes = []
         $scope.mediaNames = []
         $scope.userMediaTypes = []
+        $scope.ratings = [
+            {rating: 'G', class: 'btn-success', on: true},
+            {rating: 'PG', class: 'btn-primary', on: true},
+            {rating: 'PG-13', class: 'btn-warning', on: true},
+            {rating: 'R', class: 'btn-danger', on: true},
+            {rating: 'NC-17', class: 'btn-danger', on: true},
+            {rating: 'UR', class: 'btn-info', on: true},
+            {rating: 'NR', class: 'btn-info', on: true}
+        ]
 
         $scope.getMovieList = ->
             resp = $http.get(MOVIE_LIST_URL, {cache: true})
@@ -49,6 +59,9 @@ angular.module('app.videos', [])
 
         $scope.search = ->
             $scope.filteredVideos = $filter('filter')($scope.videos, $scope.searchKeywords)
+            for rating in $scope.ratings
+                rating.on = true
+                rating.class = $scope.ratingLabel(rating.rating).replace('label', 'btn')
             $scope.onFilterChange()
 
         # orderBy
@@ -69,21 +82,62 @@ angular.module('app.videos', [])
             return $scope.mediaNames[id]
 
         $scope.getUserMediaTypes = ->
-            ids = AuthService.getSelectedMediaTypeIds()
-            for type in $.parseJSON($window.sessionStorage.all_media_types)
-                if type.id in ids
-                    $scope.userMediaTypes.push(type)
-
-        $scope.inMediaType = (id, mediaTypes) ->
-            return id in mediaTypes
-
-        $scope.toggleMediaType = (video, media_type_id) ->
-            # TODO: add media type to movie
-            if media_type_id in video.media_types
-                video.media_types.splice(video.media_types.indexOf(media_type_id), 1)
+            if $window.sessionStorage.media_types
+                $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
             else
-                video.media_types.push(media_type_id)
+                resp = AuthService.getUser()
+                resp.success(->
+                    $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
+                )
+                resp.error(->
+                    console.error('error getting user data')
+                )
+
+
+        $scope.inMediaType = (id, user_movie) ->
+            for mt in user_movie.media_types
+                if id == mt.id
+                    return true
+            return false
+
+        $scope.toggleMediaType = (user_movie, media_type) ->
+            if $scope.inMediaType(media_type.id, user_movie)
+                for mt in user_movie.media_types
+                    if media_type.id == mt.id
+                        idx = user_movie.media_types.indexOf(mt)
+                        user_movie.media_types.splice(idx, 1)
+            else
+                user_movie.media_types.push(media_type)
             return null
+
+        $scope.ratingLabel = (rating) ->
+            if rating == 'G'
+                return 'label-success'
+            else if rating == 'PG'
+                return 'label-primary'
+            else if rating == 'PG-13'
+                return 'label-warning'
+            else if rating in ['R', 'NC-17']
+                return 'label-danger'
+            else
+                return 'label-info'
+
+        $scope.toggleRatingFilter = (rating) ->
+            if rating.on
+                rating.class = 'btn-default'
+                rating.on = false
+            else
+                rating.on = true
+                rating.class = $scope.ratingLabel(rating.rating).replace('label', 'btn')
+            $scope.filteredVideos = $filter('filter')($scope.videos, (value)->
+                for rating in $scope.ratings
+                    if rating.rating == value.movie.rating
+                        return rating.on
+                if !value.rating
+                    return $scope.ratings[6].on
+                return true
+            )
+            $scope.onFilterChange()
 
         # init
         init = ->
@@ -92,9 +146,6 @@ angular.module('app.videos', [])
                 $scope.search()
                 $scope.select($scope.currentPage)
             )
-            mediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
-            for mt in mediaTypes
-                $scope.mediaNames[mt.id] = mt.name
             $scope.getUserMediaTypes()
         init()
 ])
@@ -122,7 +173,6 @@ angular.module('app.videos', [])
                     query: query,
                     page: $scope.currentPage,
                 }, (data)->
-                    console.debug(data)
                     $scope.searchMsg = null
                     $scope.data = data
                 )
@@ -186,20 +236,24 @@ angular.module('app.videos', [])
     '$scope', '$http', '$window'
     ($scope, $http, $window) ->
         $scope.foo = 'bar'
-        $scope.selectedTypes = $.parseJSON($window.sessionStorage.media_types)
-        $scope.mediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
+        $scope.selectedTypeIds = $.parseJSON($window.sessionStorage.media_type_ids)
+        $scope.allMediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
 
         $scope.toggleSelection = (id) ->
-            idx = $scope.selectedTypes.indexOf(id)
+            idx = $scope.selectedTypeIds.indexOf(id)
             if idx > -1  # already in list, remove it
-                $scope.selectedTypes.splice(idx, 1)
+                $scope.selectedTypeIds.splice(idx, 1)
             else  # add it to the list
-                $scope.selectedTypes.push(id)
-            resp = $http.post(SET_MEDIA_TYPES_URL, {type_ids: $scope.selectedTypes})
+                $scope.selectedTypeIds.push(id)
+            resp = $http.post(SET_MEDIA_TYPES_URL, {type_ids: $scope.selectedTypeIds})
             resp.success((data)->)
             resp.error(->
                 console.error('toggleSelection Error')
             )
-            $window.sessionStorage.media_types = JSON.stringify($scope.selectedTypes)
-            #console.debug($scope.selectedTypes)
+            $window.sessionStorage.media_type_ids = JSON.stringify($scope.selectedTypeIds)
+            mediaTypes = []
+            for mt in $scope.allMediaTypes
+                if mt.id in $scope.selectedTypeIds
+                    mediaTypes.push(mt)
+                    $window.sessionStorage.media_types = JSON.stringify(mediaTypes)
 ])

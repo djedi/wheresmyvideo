@@ -8,16 +8,18 @@ class MovieTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             'tester', 'tester@sample.com', 'test')
+        models.MediaType.objects.create(name='DVD')
 
     def test_add_tmdb(self):
-        matrix = models.Movie.add_tmdb(603, self.user)
+        matrix = models.Movie.add_tmdb(603, self.user, 1)
         self.assertEqual(matrix.title, 'The Matrix')
         self.assertEqual(matrix.release_date, '1999-03-30')
         self.assertEqual(matrix.tmdb_id, 603)
         self.assertEqual(matrix.tmdb_poster, '/gynBNzwyaHKtXqlEKKLioNkjKgN.jpg')
+        self.assertEqual(matrix.genres.count(), 4)
 
     def test_add_tmdb_duplicate(self):
-        models.Movie.add_tmdb(603, self.user)
+        models.Movie.add_tmdb(603, self.user, 1)
         matrix = models.Movie.add_tmdb(603, self.user)
         self.assertEqual(matrix.title, 'The Matrix')
         self.assertEqual(models.Movie.objects.filter(
@@ -28,7 +30,7 @@ class MovieTestCase(TestCase):
             title='The Matrix',
             tmdb_id=603,
         )
-        movie.get_us_rating()
+        movie.get_us_rating(save=True)
         self.assertEqual(movie.rating, 'R')
         m2 = models.Movie.objects.first()
         self.assertEqual(m2.rating, 'R')

@@ -69,7 +69,7 @@ angular.module('app.auth', [])
         return resp
 
     authService.getUser = ->
-        resp = $http.get(USER_DETAILS_URL)
+        resp = $http.get(USER_DETAILS_URL, {cache: true})
         resp.success((data) ->
             $window.sessionStorage.username = data.username
             $window.sessionStorage.email = data.email
@@ -78,10 +78,10 @@ angular.module('app.auth', [])
             $window.sessionStorage.name = data.display_name
             $window.sessionStorage.video_count = data.video_count
             $window.sessionStorage.wish_count = data.wish_count or 0
+            $window.sessionStorage.media_type_ids = JSON.stringify(data.media_type_ids)
             $window.sessionStorage.media_types = JSON.stringify(data.media_types)
             authService.name = data.display_name
             $rootScope.$broadcast(AUTH_EVENTS.userSet)
-
         )
         resp.error(->
             console.debug("Couldn't get user data")
@@ -98,8 +98,8 @@ angular.module('app.auth', [])
         return $window.sessionStorage.email
 
     authService.getSelectedMediaTypeIds = ->
-        if $window.sessionStorage.media_types
-            return $.parseJSON($window.sessionStorage.media_types)
+        if $window.sessionStorage.media_type_ids
+            return $.parseJSON($window.sessionStorage.media_type_ids)
         else
             return []
 

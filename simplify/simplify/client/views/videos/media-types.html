@@ -4,13 +4,13 @@
         <div class="panel-heading"><strong><span class="ti-package"></span> Media Types</strong></div>
         <div class="panel-body">
             <p>Your Media Types:</p>
-            <div ng-repeat="type in mediaTypes">
+            <div ng-repeat="type in allMediaTypes">
                 <label class="ui-checkbox">
                     <input
                         name="selectedMediaTypes[]"
                         type="checkbox"
                         value="{{ type.id }}"
-                        ng-checked="selectedTypes.indexOf(type.id) > -1"
+                        ng-checked="selectedTypeIds.indexOf(type.id) > -1"
                         ng-click="toggleSelection(type.id)"
                     >
                     <span>{{ type.name }}</span>

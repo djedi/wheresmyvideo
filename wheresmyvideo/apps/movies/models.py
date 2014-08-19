@@ -37,13 +37,14 @@ class Movie(TimeStampMixin, models.Model):
             obj.release_date = resp.get('release_date')
 
         if user and media_type_id:
-            Collector.objects.get_or_create(user=user)
-            obj.users.add(user)
+            UserMovie.add_movie(user, obj, media_type_id)
 
-        if media_type_id:
-            obj.media_types.add(media_type_id)
+        # Get genres
+        for t_genre in resp.get('genres', []):
+            genre, _ = Genre.objects.get_or_create(
+                tmdb_id=t_genre['id'], name=t_genre['name'])
+            obj.genres.add(genre)
 
-        # TODO: Get genres
         obj.save()
 
         # get rating
@@ -51,17 +52,29 @@ class Movie(TimeStampMixin, models.Model):
 
         return obj
 
+    def get_tmdb_movie(self):
+        tmdb.API_KEY = settings.TMDB_API_KEY
+        tmdb_movie = tmdb.Movies(self.tmdb_id)
+        tmdb_movie.info()
+        return tmdb_movie
+
     def get_us_rating(self, tmdb_movie=None, save=False):
         if not tmdb_movie:
-            tmdb.API_KEY = settings.TMDB_API_KEY
-            tmdb_movie = tmdb.Movies(self.tmdb_id)
-            tmdb_movie.info()
+            tmdb_movie = self.get_tmdb_movie()
         tmdb_movie.releases()
         for c in tmdb_movie.countries:
             if c.get('iso_3166_1') == 'US':
                 self.rating = c.get('certification')
         if save:
             self.save()
+
+    def gen_genres(self, tmdb_movie=None, save=True):
+        if not tmdb_movie:
+            tmdb_movie = self.get_tmdb_movie()
+        for t_genre in tmdb_movie.genres:
+            genre, _ = Genre.objects.get_or_create(
+                tmdb_id=t_genre['id'], name=t_genre['name'])
+            self.genres.add(genre)
 
     @classmethod
     def search_tmdb(cls, query):

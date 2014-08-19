@@ -6,7 +6,7 @@
 
         <div class="table-filters">
             <div class="row">
-                <div class="col-sm-4 col-xs-6">
+                <div class="col-sm-3 col-xs-6">
                     <form>
                         <input type="text"
                                placeholder="Search..."
@@ -17,8 +17,13 @@
                 </div>
                 <div class="col-sm-3 col-xs-6 filter-result-info">
                     <span>
-                        Showing {{filteredVideos.length}}/{{videos.length}} entries
+                        Showing {{ filteredVideos.length }}/{{ videos.length }} entries
                     </span>              
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="btn-group btn-group-justified">
+                        <a ng-repeat="rating in ratings" role="button" class="btn" ng-class="rating.class" ng-click="toggleRatingFilter(rating)">{{ rating.rating }}</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,31 +41,28 @@
                               data-ng-click=" order('-title') "
                               data-ng-class="{active: row == '-title'}"></span>
                     </div></th>
-                    <th><div class="th">
-                        Rating
-                        <span class="fa fa-angle-up"
-                              data-ng-click=" order('rating') "
-                              data-ng-class="{active: row == 'rating'}"></span>
-                        <span class="fa fa-angle-down"
-                              data-ng-click=" order('-rating') "
-                              data-ng-class="{active: row == '-rating'}"></span>
-                    </div></th>
                     <th><div class="th">Media Type</div></th>
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="video in currentPageStores">
-                    <td><img ng-src="{{ video.thumbnail }}" alt="" title="{{ video.title }}"></td>
-                    <td>{{ video.title }}</td>
-                    <td>{{ video.rating }}</td>
+                <tr data-ng-repeat="um in currentPageStores">
+                    <td><img ng-src="{{ um.movie.thumbnail }}" alt="" title="{{ um.movie.title }}"></td>
+                    <td>
+                        <h4>{{ um.movie.title }}</h4>
+                        <span class="label"
+                              ng-class="ratingLabel(um.movie.rating)">{{ um.movie.rating || 'NR' }}</span>
+                        <span ng-repeat="genre in um.movie.genres">
+                            <span class="label label-default">{{ genre.name }}</span>
+                        </span>
+                    </td>
                     <td>
                         <span ng-repeat="mt in userMediaTypes">
                             <button class="btn btn-xs"
                                     ng-class="{
-                                        'btn-default': !inMediaType(mt.id, video.media_types),
-                                        'btn-primary': inMediaType(mt.id, video.media_types)
+                                        'btn-default': !inMediaType(mt.id, um),
+                                        'btn-primary': inMediaType(mt.id, um)
                                         }"
-                                    ng-click="toggleMediaType(video, mt.id)">{{ mt.name }}</button>
+                                    ng-click="toggleMediaType(um, mt)">{{ mt.name }}</button>
                         </span>
                     </td>
                 </tr>

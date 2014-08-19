@@ -9,6 +9,7 @@ from movies import rest_views as movie_views
 router = routers.DefaultRouter()
 router.register(r'movies', movie_views.MovieViewSet)
 router.register(r'media-types', movie_views.MediaTypeViewSet)
+router.register(r'user-movies', movie_views.UserMovieViewSet)
 
 
 urlpatterns = patterns(

@@ -36,16 +36,14 @@ angular.module('app.controllers', [])
             name: AuthService.getName()
             email: AuthService.getEmail()
             isAuthorized: AuthService.isAuthenticated
-            mediaTypes: []
+            allMediaTypes: []
             selectedMediaTypeIds: []
             selectedMediaTypes: []
 
         $scope.getMediaTypes = ->
             resp = $http.get(MEDIA_TYPES_URL, {cache: true})
             resp.success((data)->
-                $scope.main.mediaTypes = data
-                console.debug(data)
-                console.debug(JSON.stringify(data))
+                $scope.main.allMediaTypes = data
                 $window.sessionStorage.all_media_types = JSON.stringify(data)
             )
             resp.error(->

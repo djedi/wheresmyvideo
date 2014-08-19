@@ -10,11 +10,9 @@ class Movie(TimeStampMixin, models.Model):
     title = models.CharField(max_length=255)
     release_date = models.DateField(blank=True, null=True)
     tmdb_id = models.PositiveIntegerField(unique=True)
-    media_types = models.ManyToManyField('MediaType', blank=True, null=True)
     rating = models.CharField(max_length=5, blank=True, null=True)
     genres = models.ManyToManyField('Genre', blank=True, null=True)
     tmdb_poster = models.CharField(max_length=255, blank=True, null=True)
-    users = models.ManyToManyField(User, blank=True, null=True)
 
     @classmethod
     def add_tmdb(cls, tmdb_id, user=None, media_type_id=None):
@@ -38,7 +36,8 @@ class Movie(TimeStampMixin, models.Model):
         if resp.get('release_date'):
             obj.release_date = resp.get('release_date')
 
-        if user:
+        if user and media_type_id:
+            Collector.objects.get_or_create(user=user)
             obj.users.add(user)
 
         if media_type_id:
@@ -114,3 +113,22 @@ class Genre(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class UserMovie(models.Model):
+    user = models.ForeignKey(User)
+    movie = models.ForeignKey(Movie)
+    media_types = models.ManyToManyField(MediaType, blank=True, null=True)
+
+    def __unicode__(self):
+        return "{} owns {} on {}".format(self.user.username, self.movie.title, self.media_type_names)
+
+    @classmethod
+    def add_movie(cls, user, movie, media_type):
+        obj, created = cls.objects.get_or_create(user=user, movie=movie)
+        obj.media_types.add(media_type)
+        return obj
+
+    @property
+    def media_type_names(self):
+        return ', '.join([mt.name for mt in self.media_types.all()])

@@ -19,13 +19,21 @@ class MovieViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def add_movie_by_tmdb_id(request):
     tmdb_id = request.DATA.get('id')
-    movie = models.Movie.add_tmdb(tmdb_id, request.user)
+    media_type_id = request.DATA.get('media_type_id')
+    movie = models.Movie.add_tmdb(tmdb_id, request.user, media_type_id)
     return Response({'movie': {'title': movie.title, 'id': movie.id}})
 
 
 class MediaTypeViewSet(viewsets.ModelViewSet):
     queryset = models.MediaType.objects.all().order_by('name')
     serializer_class = serializers.MediaTypeSerializer
+
+    def get_queryset(self):
+        user_id = self.request.GET.get('user', None)
+        qs = models.MediaType.objects.all()
+        if user_id:
+            qs = qs.filter(users__id=user_id)
+        return qs.order_by('name')
 
 
 @api_view(['POST'])

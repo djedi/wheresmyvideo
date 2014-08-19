@@ -1,13 +1,13 @@
 'use strict';
 
+MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/'
+
 angular.module('app.controllers', [])
 
 # overall control
 .controller('AppCtrl', [
-    '$scope', '$rootScope', 'AUTH_EVENTS', 'AuthService', '$location'
-    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location) ->
-        $window = $(window)
-
+    '$scope', '$rootScope', 'AUTH_EVENTS', 'AuthService', '$location', '$http', '$window'
+    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $http, $window) ->
         $scope.currentUser = AuthService.getName()
 
         $scope.setCurrentUser = (user) ->
@@ -17,11 +17,14 @@ angular.module('app.controllers', [])
             $scope.currentUser = AuthService.getName()
             $scope.main.name = AuthService.getName()
             $scope.main.email = AuthService.getEmail()
-            $scope.main.sesssion = AuthService.getSession()
+            $scope.main.selectedMediaTypeIds = AuthService.getSelectedMediaTypeIds()
+        )
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, ->
+            $scope.getMediaTypes()
         )
 
         $scope.$on(AUTH_EVENTS.notAuthenticated, ->
-            console.log('AppCtrl NOT AUTHENTICATED')
             path = $location.path()
             if not (/^\/auth/).test(path) and not (/^\/public/).test(path)
                 $location.path('/auth/login')
@@ -34,6 +37,20 @@ angular.module('app.controllers', [])
             email: AuthService.getEmail()
             isAuthorized: AuthService.isAuthenticated
             mediaTypes: []
+            selectedMediaTypeIds: []
+            selectedMediaTypes: []
+
+        $scope.getMediaTypes = ->
+            resp = $http.get(MEDIA_TYPES_URL, {cache: true})
+            resp.success((data)->
+                $scope.main.mediaTypes = data
+                console.debug(data)
+                console.debug(JSON.stringify(data))
+                $window.sessionStorage.all_media_types = JSON.stringify(data)
+            )
+            resp.error(->
+                console.error('getMediaTypes Error')
+            )
 
         $scope.logout = ->
             resp = AuthService.logout()

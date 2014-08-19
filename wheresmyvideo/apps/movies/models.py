@@ -17,7 +17,7 @@ class Movie(TimeStampMixin, models.Model):
     users = models.ManyToManyField(User, blank=True, null=True)
 
     @classmethod
-    def add_tmdb(cls, tmdb_id, user=None):
+    def add_tmdb(cls, tmdb_id, user=None, media_type_id=None):
         tmdb.API_KEY = settings.TMDB_API_KEY
         tmdb_movie = tmdb.Movies(tmdb_id)
         resp = tmdb_movie.info()
@@ -40,6 +40,9 @@ class Movie(TimeStampMixin, models.Model):
 
         if user:
             obj.users.add(user)
+
+        if media_type_id:
+            obj.media_types.add(media_type_id)
 
         # TODO: Get genres
         obj.save()

@@ -45,6 +45,7 @@
                               data-ng-click=" order('-rating') "
                               data-ng-class="{active: row == '-rating'}"></span>
                     </div></th>
+                    <th><div class="th">Media Type</div></th>
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +53,16 @@
                     <td><img ng-src="{{ video.thumbnail }}" alt="" title="{{ video.title }}"></td>
                     <td>{{ video.title }}</td>
                     <td>{{ video.rating }}</td>
+                    <td>
+                        <span ng-repeat="mt in userMediaTypes">
+                            <button class="btn btn-xs"
+                                    ng-class="{
+                                        'btn-default': !inMediaType(mt.id, video.media_types),
+                                        'btn-primary': inMediaType(mt.id, video.media_types)
+                                        }"
+                                    ng-click="toggleMediaType(video, mt.id)">{{ mt.name }}</button>
+                        </span>
+                    </td>
                 </tr>
             </tbody>
         </table>

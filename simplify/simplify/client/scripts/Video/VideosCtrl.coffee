@@ -9,18 +9,18 @@ USER_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/user-set/'
 angular.module('app.videos', [])
 
 .controller('videoListCtrl', [
-    '$scope', '$filter', '$http'
-    ($scope, $filter, $http) ->
+    '$scope', '$filter', '$http', '$window', 'AuthService'
+    ($scope, $filter, $http, $window, AuthService) ->
         $scope.videos = []
         $scope.filteredVideos = []
         $scope.searchKeywords = ''
         $scope.row = ''
+        $scope.mediaNames = []
+        $scope.userMediaTypes = []
 
         $scope.getMovieList = ->
             resp = $http.get(MOVIE_LIST_URL, {cache: true})
             resp.success((data)->
-                #console.debug('video list data')
-                #console.debug(data)
                 $scope.videos = data
             )
             resp.error((err)->
@@ -31,9 +31,6 @@ angular.module('app.videos', [])
             start = (page - 1) * $scope.numPerPage
             end = start + $scope.numPerPage
             $scope.currentPageStores = $scope.filteredVideos.slice(start, end)
-#            console.log start
-#            console.log end
-#            console.log $scope.currentPageStores
 
         # on page change: change numPerPage, filtering string
         $scope.onFilterChange = ->
@@ -68,6 +65,26 @@ angular.module('app.videos', [])
         $scope.currentPage = 1
         $scope.currentPageStores = []
 
+        $scope.getMediaTypeName = (id) ->
+            return $scope.mediaNames[id]
+
+        $scope.getUserMediaTypes = ->
+            ids = AuthService.getSelectedMediaTypeIds()
+            for type in $.parseJSON($window.sessionStorage.all_media_types)
+                if type.id in ids
+                    $scope.userMediaTypes.push(type)
+
+        $scope.inMediaType = (id, mediaTypes) ->
+            return id in mediaTypes
+
+        $scope.toggleMediaType = (video, media_type_id) ->
+            # TODO: add media type to movie
+            if media_type_id in video.media_types
+                video.media_types.splice(video.media_types.indexOf(media_type_id), 1)
+            else
+                video.media_types.push(media_type_id)
+            return null
+
         # init
         init = ->
             resp = $scope.getMovieList()
@@ -75,12 +92,16 @@ angular.module('app.videos', [])
                 $scope.search()
                 $scope.select($scope.currentPage)
             )
+            mediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
+            for mt in mediaTypes
+                $scope.mediaNames[mt.id] = mt.name
+            $scope.getUserMediaTypes()
         init()
 ])
 
 .controller('videoSearchCtrl', [
-    '$scope', 'TmdbService', 'logger', '$http', '$cacheFactory'
-    ($scope, TmdbService, logger, $http, $cacheFactory) ->
+    '$scope', 'TmdbService', 'logger', '$http', '$cacheFactory', 'AuthService', '$window'
+    ($scope, TmdbService, logger, $http, $cacheFactory, AuthService, $window) ->
         $scope.query = ''
         $scope.searchMsg = null
         $scope.data = {
@@ -89,6 +110,7 @@ angular.module('app.videos', [])
         }
         $scope.currentPage = 1
         $scope.RESULTS_PER_PAGE = 20  # tmdb constant, can't really change this
+        $scope.userMediaTypes = []
 
         $scope.search = (query) ->
             if query
@@ -118,8 +140,8 @@ angular.module('app.videos', [])
                 $scope.data = data
             )
 
-        $scope.addMovie = (tmdb_id)->
-            resp = $http.post(ADD_TMDB_MOVIE_URL, {id: tmdb_id})
+        $scope.addMovie = (tmdb_id, media_type_id)->
+            resp = $http.post(ADD_TMDB_MOVIE_URL, {id: tmdb_id, media_type_id: media_type_id})
             resp.success((data) ->
                 logger.logSuccess(data.movie.title + ' added successfully.')
                 $httpDefaultCache = $cacheFactory.get('$http')
@@ -128,6 +150,16 @@ angular.module('app.videos', [])
             resp.error((err) ->
                 console.debug('Error adding movie')
             )
+
+        $scope.getUserMediaTypes = ->
+            ids = AuthService.getSelectedMediaTypeIds()
+            for type in $.parseJSON($window.sessionStorage.all_media_types)
+                if type.id in ids
+                    $scope.userMediaTypes.push(type)
+
+        init = ->
+            $scope.getUserMediaTypes()
+        init()
 ])
 
 #.factory({
@@ -154,19 +186,8 @@ angular.module('app.videos', [])
     '$scope', '$http', '$window'
     ($scope, $http, $window) ->
         $scope.foo = 'bar'
-        $scope.mediaTypes = []
-        $scope.selectedTypes = $window.sessionStorage.media_types.split(',').map((x)->parseInt(x))
-        #console.debug($scope.selectedTypes)
-
-        $scope.getMediaTypes = ->
-            resp = $http.get(MEDIA_TYPES_URL, {cache: true})
-            resp.success((data)->
-                $scope.mediaTypes = data
-                #console.debug(data)
-            )
-            resp.error(->
-                console.error('getMediaTypes Error')
-            )
+        $scope.selectedTypes = $.parseJSON($window.sessionStorage.media_types)
+        $scope.mediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
 
         $scope.toggleSelection = (id) ->
             idx = $scope.selectedTypes.indexOf(id)
@@ -179,10 +200,6 @@ angular.module('app.videos', [])
             resp.error(->
                 console.error('toggleSelection Error')
             )
-            $window.sessionStorage.media_types = $scope.selectedTypes
+            $window.sessionStorage.media_types = JSON.stringify($scope.selectedTypes)
             #console.debug($scope.selectedTypes)
-
-        init = ->
-            $scope.getMediaTypes()
-        init()
 ])

@@ -134,7 +134,8 @@ class UserMovie(models.Model):
     media_types = models.ManyToManyField(MediaType, blank=True, null=True)
 
     def __unicode__(self):
-        return "{} owns {} on {}".format(self.user.username, self.movie.title, self.media_type_names)
+        return "{} owns {} on {}".format(
+            self.user.username, self.movie.title, self.media_type_names)
 
     @classmethod
     def add_movie(cls, user, movie, media_type):
@@ -145,3 +146,6 @@ class UserMovie(models.Model):
     @property
     def media_type_names(self):
         return ', '.join([mt.name for mt in self.media_types.all()])
+
+    class Meta:
+        unique_together = ('user', 'movie')

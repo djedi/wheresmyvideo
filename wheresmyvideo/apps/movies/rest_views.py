@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from . import models
@@ -58,3 +59,15 @@ class UserMovieViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
         return queryset.order_by('movie__title')
+
+
+@api_view(['PUT'])
+def update_user_movie_media_types(request):
+    user_movie_id = request.DATA.get('id')
+    media_types = request.DATA.get('media_types')
+    user_movie = get_object_or_404(models.UserMovie, pk=user_movie_id)
+    user_movie.media_types.clear()
+    for mt in media_types:
+        print mt
+        user_movie.media_types.add(mt['id'])
+    return Response({'success': True, 'id': user_movie.id, 'media_types': media_types})

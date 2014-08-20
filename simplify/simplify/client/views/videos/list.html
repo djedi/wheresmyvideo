@@ -56,6 +56,7 @@
                         </span>
                     </td>
                     <td>
+                        <p class="text-center">
                         <span ng-repeat="mt in userMediaTypes">
                             <button class="btn btn-xs"
                                     ng-class="{
@@ -63,7 +64,11 @@
                                         'btn-primary': inMediaType(mt.id, um)
                                         }"
                                     ng-click="toggleMediaType(um, mt)">{{ mt.name }}</button>
-                        </span>
+                        </span><br>
+                        </p>
+                        <p class="text-right">
+                            <button type="button" class="btn btn-xs btn-danger" ng-click="deleteMovie(um)"><i class="ti-trash"></i></button>
+                        </p>
                     </td>
                 </tr>
             </tbody>
@@ -97,3 +102,16 @@
     </section>
 
 </div>
+
+<script type="text/ng-template" id="modalConfirmDelete.html">
+    <div class="modal-header">
+        <h3>Remove Video</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to remove this video?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()"><i class="ti-trash"></i> Remove</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

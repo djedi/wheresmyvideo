@@ -5,12 +5,13 @@ MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/user-movies/'
 ADD_TMDB_MOVIE_URL = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
 SET_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/set/'
 USER_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/user-set/'
+UPDATE_USER_MOVIE_MEDIA_URL = 'http://127.0.0.1:8002/api/v1/user-movies/update-media-types/'
 
 angular.module('app.videos', [])
 
 .controller('videoListCtrl', [
-    '$scope', '$filter', '$http', '$window', 'AuthService'
-    ($scope, $filter, $http, $window, AuthService) ->
+    '$scope', '$filter', '$http', '$window', 'AuthService', '$modal', 'logger'
+    ($scope, $filter, $http, $window, AuthService, $modal, logger) ->
         $scope.videos = []
         $scope.filteredVideos = []
         $scope.searchKeywords = ''
@@ -34,7 +35,7 @@ angular.module('app.videos', [])
                 $scope.videos = data
             )
             resp.error((err)->
-                console.debug(err)
+                console.log(err)
             )
 
         $scope.select = (page) ->
@@ -103,12 +104,19 @@ angular.module('app.videos', [])
         $scope.toggleMediaType = (user_movie, media_type) ->
             if $scope.inMediaType(media_type.id, user_movie)
                 for mt in user_movie.media_types
-                    if media_type.id == mt.id
+                    if mt and media_type.id == mt.id
                         idx = user_movie.media_types.indexOf(mt)
                         user_movie.media_types.splice(idx, 1)
+                        break
             else
                 user_movie.media_types.push(media_type)
-            return null
+            $http.put(UPDATE_USER_MOVIE_MEDIA_URL, {id: user_movie.id, media_types: user_movie.media_types})
+            .success((data)->
+                return
+            ).error((err)->
+                return
+            )
+            return
 
         $scope.ratingLabel = (rating) ->
             if rating == 'G'
@@ -139,6 +147,27 @@ angular.module('app.videos', [])
             )
             $scope.onFilterChange()
 
+        $scope.deleteMovie = (user_movie) ->
+            modalInstance = $modal.open(
+                templateUrl: "modalConfirmDelete.html"
+                controller: 'ModalConfirmDelete'
+            )
+            modalInstance.result.then ((action) ->
+                resp = $http.delete(MOVIE_LIST_URL + user_movie.id + '/')
+                resp.success(->
+                    $scope.videos.splice($scope.videos.indexOf(user_movie), 1)
+                    $scope.filteredVideos.splice($scope.filteredVideos.indexOf(user_movie), 1)
+                    $scope.currentPageStores.splice($scope.currentPageStores.indexOf(user_movie), 1)
+                )
+                resp.error(->
+                    logger.error('There was an error removing the video.')
+                )
+                return
+            ), ->
+                return
+
+            return
+
         # init
         init = ->
             resp = $scope.getMovieList()
@@ -148,6 +177,19 @@ angular.module('app.videos', [])
             )
             $scope.getUserMediaTypes()
         init()
+])
+.controller('ModalConfirmDelete', [
+    '$scope', '$modalInstance'
+    ($scope, $modalInstance) ->
+        $scope.ok = ->
+            $modalInstance.close 'delete'
+            return
+
+        $scope.cancel = ->
+            $modalInstance.dismiss 'cancel'
+            return
+
+        return
 ])
 
 .controller('videoSearchCtrl', [
@@ -198,7 +240,7 @@ angular.module('app.videos', [])
                 $httpDefaultCache.remove(MOVIE_LIST_URL)
             )
             resp.error((err) ->
-                console.debug('Error adding movie')
+                console.log('Error adding movie')
             )
 
         $scope.getUserMediaTypes = ->

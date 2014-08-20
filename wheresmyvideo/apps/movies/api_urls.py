@@ -6,4 +6,5 @@ urlpatterns = patterns(
     url(r'^media-types/set/$', 'set_user_media_types', name='set_media_types'),
     url(r'^media-types/user-set/$', 'get_user_media_type_ids',
         name='get_user_types'),
+    url(r'^user-movies/update-media-types/$', 'update_user_movie_media_types'),
 )

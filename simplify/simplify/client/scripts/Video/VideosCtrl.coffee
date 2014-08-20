@@ -299,3 +299,19 @@ angular.module('app.videos', [])
                     mediaTypes.push(mt)
                     $window.sessionStorage.media_types = JSON.stringify(mediaTypes)
 ])
+
+.directive('movieposter', ->
+    return {
+        template: '<a href="#" ng-click="openShadowbox()"><img ng-src="https://image.tmdb.org/t/p/w92{{ tmdb_poster }}" title="{{ title }}" alt="No Image"></a>'
+        scope: {
+            tmdb_poster: '@tmdbPoster'
+            title: '@title'
+        }
+        link: (scope, element, attrs) ->
+            scope.openShadowbox = ->
+                Shadowbox.open({
+                    content: 'https://image.tmdb.org/t/p/w396' + scope.tmdb_poster
+                    player: 'img'
+                })
+    }
+)

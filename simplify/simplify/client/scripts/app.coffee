@@ -79,3 +79,7 @@ angular.module('ui.gravatar').config([
     # Use https endpoint
     gravatarServiceProvider.secure = false
 ])
+
+Shadowbox.init({
+    skipSetup: true
+})

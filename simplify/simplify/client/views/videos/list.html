@@ -46,7 +46,9 @@
             </thead>
             <tbody>
                 <tr data-ng-repeat="um in currentPageStores">
-                    <td><img ng-src="{{ um.movie.thumbnail }}" alt="" title="{{ um.movie.title }}"></td>
+                    <td>
+                        <a movieposter tmdb-poster="{{ um.movie.tmdb_poster }}" title="{{ um.movie.title }}"></a>
+                    </td>
                     <td>
                         <h4>{{ um.movie.title }}</h4>
                         <span class="label"

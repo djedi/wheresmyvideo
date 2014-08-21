@@ -1,4 +1,5 @@
-Django==1.7c2
+https://www.djangoproject.com/download/1.7c3/tarball/
+
 django-cors-headers
 django-registration
 django-rest-auth

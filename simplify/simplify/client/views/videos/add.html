@@ -66,7 +66,7 @@
                 <tr data-ng-repeat="video in data.results">
                     <td>
                         <span ng-if="video.poster_path">
-                            <a movieposter tmdb-poster="{{ video.poster_path }}" title="{{ video.title }}"></a>
+                            <movieposter tmdb-poster="{{ video.poster_path }}" title="{{ video.title }}"></movieposter>
                         </span>
                         <span ng-if="!video.poster_path">
                             <i class="ti-image"></i> No Image

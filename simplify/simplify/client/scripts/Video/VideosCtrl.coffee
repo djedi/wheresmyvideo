@@ -302,7 +302,8 @@ angular.module('app.videos', [])
 
 .directive('movieposter', ->
     return {
-        template: '<a href="#" ng-click="openShadowbox()"><img ng-src="https://image.tmdb.org/t/p/w92{{ tmdb_poster }}" title="{{ title }}" alt="No Image"></a>'
+        restrict: 'E'
+        template: '<a href="javascript:;" ng-click="openShadowbox()"><img ng-src="https://image.tmdb.org/t/p/w92{{ tmdb_poster }}" title="{{ title }}" alt="No Image"></a>'
         scope: {
             tmdb_poster: '@tmdbPoster'
             title: '@title'

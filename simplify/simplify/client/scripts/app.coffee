@@ -80,6 +80,8 @@ angular.module('ui.gravatar').config([
     gravatarServiceProvider.secure = false
 ])
 
-Shadowbox.init({
-    skipSetup: true
-})
+$(window).load(->
+    Shadowbox.init({
+        skipSetup: true
+    })
+)

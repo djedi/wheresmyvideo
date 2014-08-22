@@ -251,6 +251,11 @@ module.exports = (grunt) ->
                     cwd: ".tmp/images"
                     dest: "<%= yeoman.dist %>/images"
                     src: ["generated/*"]
+                ,
+                    expand: true
+                    cwd: "client/scripts/vendors/shadowbox-3.0.3/img"
+                    dest: "<%= yeoman.dist %>/styles"
+                    src: ["*.png", "*.gif"]
                 ]
 
             styles:

@@ -252,10 +252,16 @@ module.exports = (grunt) ->
                     dest: "<%= yeoman.dist %>/images"
                     src: ["generated/*"]
                 ,
+                    # shadowbox fixes
                     expand: true
                     cwd: "client/scripts/vendors/shadowbox-3.0.3/img"
                     dest: "<%= yeoman.dist %>/styles"
                     src: ["*.png", "*.gif"]
+                ,
+                    expand: true
+                    cwd: "client/bower_components/angular-resource"
+                    dest: "<%= yeoman.dist %>/scripts"
+                    src: ["angular-resource.min.js"]
                 ]
 
             styles:

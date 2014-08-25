@@ -1,4 +1,4 @@
-https://www.djangoproject.com/download/1.7c3/tarball/
+Django==1.7c3
 
 django-cors-headers
 django-registration

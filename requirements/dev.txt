@@ -1,5 +1,6 @@
 -r base.txt
 
+Fabric
 django-debug-toolbar
 django-extensions
 jinja2

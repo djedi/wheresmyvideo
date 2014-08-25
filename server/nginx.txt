@@ -9,6 +9,10 @@ server {
     # look in this directory for files to serve
     root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
     index index.html;
+
+    location /scripts {
+        autoindex on;
+    }
  
     # keep logs in these files
     access_log /var/log/nginx/wmv.access.log;

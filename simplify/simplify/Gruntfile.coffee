@@ -261,7 +261,7 @@ module.exports = (grunt) ->
                     expand: true
                     cwd: "client/bower_components/angular-resource"
                     dest: "<%= yeoman.dist %>/scripts"
-                    src: ["angular-resource.min.js"]
+                    src: ["angular-resource.min.js.map"]
                 ]
 
             styles:

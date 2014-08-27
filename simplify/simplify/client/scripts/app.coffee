@@ -69,7 +69,7 @@ angular.module('app', [
             .otherwise( redirectTo: '/404' )
 ])
 
-angular.module('ui.gravatar').config([
+.config([
   'gravatarServiceProvider', (gravatarServiceProvider) ->
     gravatarServiceProvider.defaults = {
         size: 100,

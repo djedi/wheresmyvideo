@@ -1,6 +1,8 @@
 'use strict';
 
-USER_DETAILS_URL = 'http://127.0.0.1:8002/api/v1/user/'
+API_ROOT = 'http://127.0.0.1:8002'
+USER_DETAILS_URL =  API_ROOT + '/api/v1/user/'
+FORGOT_PASSWORD_URL = API_ROOT + '/rest-auth/password/reset/'
 
 angular.module('app.auth', [])
 
@@ -166,8 +168,8 @@ angular.module('app.auth', [])
     '$scope', '$rootScope', '$http', 'logger', 'AUTH_EVENTS', 'AuthService', '$location'
     ($scope, $rootScope, $http, logger, AUTH_EVENTS, AuthService, $location) ->
         $scope.credentials = {
-            username: '',
-            password: '',
+            username: ''
+            password: ''
         }
         $scope.login = (credentials)->
             resp = AuthService.login(credentials)
@@ -178,4 +180,22 @@ angular.module('app.auth', [])
             resp.error(->
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed)
             )
+])
+
+.controller('ForgotPasswordCtrl', [
+    '$scope', '$http'
+    ($scope, $http) ->
+        $scope.frm = {
+            email: ''
+        }
+
+        $scope.forgotPassword = (frm) ->
+            $http.post(FORGOT_PASSWORD_URL, {email: frm.email})
+            .success((data) ->
+                console.debug(data)
+            )
+            .error((err) ->
+                console.error(err)
+            )
+
 ])

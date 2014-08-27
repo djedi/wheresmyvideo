@@ -199,15 +199,15 @@ module.exports = (grunt) ->
             dist:
                 options: {}
                 
-                #removeCommentsFromCDATA: true,
-                #                    // https://github.com/yeoman/grunt-usemin/issues/44
-                #                    //collapseWhitespace: true,
-                #                    collapseBooleanAttributes: true,
-                #                    removeAttributeQuotes: true,
-                #                    removeRedundantAttributes: true,
-                #                    useShortDoctype: true,
-                #                    removeEmptyAttributes: true,
-                #                    removeOptionalTags: true
+                removeCommentsFromCDATA: true,
+#                                    # https://github.com/yeoman/grunt-usemin/issues/44
+#                                    collapseWhitespace: true,
+#                                    collapseBooleanAttributes: true,
+#                                    removeAttributeQuotes: true,
+#                                    removeRedundantAttributes: true,
+#                                    useShortDoctype: true,
+#                                    removeEmptyAttributes: true,
+#                                    removeOptionalTags: true
                 files: [
                     expand: true
                     cwd: "<%= yeoman.app %>"
@@ -257,11 +257,6 @@ module.exports = (grunt) ->
                     cwd: "client/scripts/vendors/shadowbox-3.0.3/img"
                     dest: "<%= yeoman.dist %>/styles"
                     src: ["*.png", "*.gif"]
-                ,
-                    expand: true
-                    cwd: "client/bower_components/angular-resource"
-                    dest: "<%= yeoman.dist %>/scripts"
-                    src: ["angular-resource.min.js.map", "angular-resource.js"]
                 ]
 
             styles:

@@ -31,7 +31,8 @@
     "flot.tooltip": "~0.7.0",
     "chartjs": "1.0.1-beta.3",
     "color": "~2.4.1",
-    "flot.curvedlines": "*"
+    "flot.curvedlines": "*",
+    "angular-gravatar": "~0.2.1"
   },
   "devDependencies": {
     "holderjs": "~2.3.1",

@@ -70,14 +70,14 @@ angular.module('app', [
 ])
 
 .config([
-  'gravatarServiceProvider', (gravatarServiceProvider) ->
-    gravatarServiceProvider.defaults = {
-        size: 100,
-        "default": 'mm'  # Mystery man as default for missing avatars
-    }
+    'gravatarServiceProvider', (gravatarServiceProvider) ->
+        gravatarServiceProvider.defaults = {
+            size: 100,
+            "default": 'mm'  # Mystery man as default for missing avatars
+        }
 
-    # Use https endpoint
-    gravatarServiceProvider.secure = false
+        # Use https endpoint
+        gravatarServiceProvider.secure = false
 ])
 
 $(window).load(->

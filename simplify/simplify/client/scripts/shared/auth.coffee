@@ -1,9 +1,5 @@
 'use strict';
 
-API_ROOT = 'http://127.0.0.1:8002'
-USER_DETAILS_URL =  API_ROOT + '/api/v1/user/'
-FORGOT_PASSWORD_URL = API_ROOT + '/rest-auth/password/reset/'
-
 angular.module('app.auth', [])
 
 .constant('AUTH_EVENTS', {
@@ -16,14 +12,13 @@ angular.module('app.auth', [])
     userSet: 'auth-user-set',
 })
 
-.factory('AuthService', ($http, logger, $window, $rootScope, AUTH_EVENTS, $cacheFactory) ->
+.factory('AuthService', ($http, logger, $window, $rootScope, AUTH_EVENTS, $cacheFactory, API) ->
     authService = {
         name: null
     }
 
     authService.login = (credentials) ->
-        login_url = 'http://127.0.0.1:8002/rest-auth/login/'
-        resp = $http.post(login_url, {
+        resp = $http.post(API.login, {
             username: credentials.username,
             password: credentials.password,
         })
@@ -55,8 +50,7 @@ angular.module('app.auth', [])
         return resp
 
     authService.logout = ->
-        logout_url = 'http://127.0.0.1:8002/rest-auth/logout/'
-        resp = $http.get(logout_url)
+        resp = $http.get(API.logout)
         resp.success((data)->
             logger.logSuccess(data.success)
             $window.sessionStorage.clear()
@@ -71,7 +65,7 @@ angular.module('app.auth', [])
         return resp
 
     authService.getUser = ->
-        resp = $http.get(USER_DETAILS_URL, {cache: true})
+        resp = $http.get(API.userDetails, {cache: true})
         resp.success((data) ->
             $window.sessionStorage.username = data.username
             $window.sessionStorage.email = data.email
@@ -133,16 +127,15 @@ angular.module('app.auth', [])
 )
 
 .controller('SignUpCtrl', [
-    '$scope', '$rootScope', '$http', 'AUTH_EVENTS', 'AuthService', 'logger', '$location'
-    ($scope, $rootScope, $http, AUTH_EVENTS, AuthService, logger, $location) ->
+    '$scope', '$rootScope', '$http', 'AUTH_EVENTS', 'AuthService', 'logger', '$location', 'API'
+    ($scope, $rootScope, $http, AUTH_EVENTS, AuthService, logger, $location, API) ->
         $scope.credentials = {
             username: '',
             password: '',
             email: '',
         }
         $scope.signUp = (credentials)->
-            url = 'http://127.0.0.1:8002/rest-auth/register/'
-            resp = $http.post(url, {
+            resp = $http.post(API.register, {
                 username: credentials.username,
                 email: credentials.email,
                 password: credentials.password,
@@ -183,19 +176,18 @@ angular.module('app.auth', [])
 ])
 
 .controller('ForgotPasswordCtrl', [
-    '$scope', '$http'
-    ($scope, $http) ->
+    '$scope', '$http', 'API'
+    ($scope, $http, API) ->
         $scope.frm = {
             email: ''
         }
 
         $scope.forgotPassword = (frm) ->
-            $http.post(FORGOT_PASSWORD_URL, {email: frm.email})
+            $http.post(API.forgotPassword, {email: frm.email})
             .success((data) ->
                 console.debug(data)
             )
             .error((err) ->
                 console.error(err)
             )
-
 ])

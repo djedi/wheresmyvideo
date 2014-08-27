@@ -2,12 +2,26 @@
 
 MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/'
 
+if window.location.host == 'wheresmyvideo.com'
+    apiRoot = 'http://wheresmyvideo.com/api/v1/'
+else
+    apiRoot = 'http://127.0.0.1:8002/api/v1/'
+
 angular.module('app.controllers', [])
+
+.constant('API', {
+    login: apiRoot + 'rest-auth/login/'
+    logout: apiRoot + 'rest-auth/logout/'
+    register: apiRoot + 'rest-auth/register/'
+    userDetails: apiRoot + 'user/'
+    forgotPassword: apiRoot + 'rest-auth/password/reset/'
+    mediatTypes: apiRoot + 'media-types'
+})
 
 # overall control
 .controller('AppCtrl', [
-    '$scope', '$rootScope', 'AUTH_EVENTS', 'AuthService', '$location', '$http', '$window'
-    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $http, $window) ->
+    '$scope', '$rootScope', 'AUTH_EVENTS', 'AuthService', '$location', '$http', '$window', 'API'
+    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $http, $window, API) ->
         $scope.currentUser = AuthService.getName()
 
         $scope.setCurrentUser = (user) ->
@@ -41,7 +55,7 @@ angular.module('app.controllers', [])
             selectedMediaTypes: []
 
         $scope.getMediaTypes = ->
-            resp = $http.get(MEDIA_TYPES_URL, {cache: true})
+            resp = $http.get(API.mediaTypes, {cache: true})
             resp.success((data)->
                 $scope.main.allMediaTypes = data
                 $window.sessionStorage.all_media_types = JSON.stringify(data)

@@ -15,10 +15,13 @@ server {
         index index.html;
 
         # keep logs in these files
-        access_log /var/log/nginx/wmv.access.log;
-        error_log /var/log/nginx/wmv.error.log;
+        access_log /var/log/nginx/ux.access.log;
+        error_log /var/log/nginx/ux.error.log;
+    }
 
-        # whatever static doesn't catch, send to django
+    location /api/ {
+        access_log /var/log/nginx/api.access.log;
+        error_log /var/log/nginx/api.error.log;
         try_files $uri @gunicorn;
     }
 

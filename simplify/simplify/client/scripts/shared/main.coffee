@@ -3,7 +3,7 @@
 MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/'
 
 if window.location.host == 'wheresmyvideo.com'
-    apiRoot = 'http://wheresmyvideo.com/api/v1/'
+    apiRoot = 'http://api.wheresmyvideo.com/v1/'
 else
     apiRoot = 'http://127.0.0.1:8002/api/v1/'
 

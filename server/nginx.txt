@@ -18,14 +18,6 @@ server {
         access_log /var/log/nginx/ux.access.log;
         error_log /var/log/nginx/ux.error.log;
     }
-
-    location /static/ {
-        alias /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
-        autoindex on;
-
-        access_log /var/log/nginx/static.access.log;
-        error_log /var/log/nginx/static.error.log;
-    }
 }
 
 # django
@@ -34,10 +26,20 @@ server {
 
     server_name api.wheresmyvideo.com;
 
-    root /var/www/;
-    access_log /var/log/nginx/api.access.log;
-    error_log /var/log/nginx/api.error.log;
-    try_files $uri @gunicorn;
+    location / {
+        root /var/www/;
+        access_log /var/log/nginx/api.access.log;
+        error_log /var/log/nginx/api.error.log;
+        try_files $uri @gunicorn;
+    }
+
+    location /static/ {
+        alias /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
+        autoindex on;
+
+        access_log /var/log/nginx/static.access.log;
+        error_log /var/log/nginx/static.error.log;
+    }
 
     location @gunicorn {
         proxy_pass http://gunicorn;

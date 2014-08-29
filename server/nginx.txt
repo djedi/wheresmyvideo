@@ -23,7 +23,7 @@ server {
     }
 
     location /static/ {
-        root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
+        alias /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
         autoindex on;
 
         access_log /var/log/nginx/static.access.log;

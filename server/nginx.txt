@@ -26,8 +26,8 @@ server {
         root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
         autoindex on;
 
-        access_log /var/log/nginx/static.access.log
-        error_log /var/log/nginx/static.error.log
+        access_log /var/log/nginx/static.access.log;
+        error_log /var/log/nginx/static.error.log;
     }
 
     location @gunicorn {

@@ -24,6 +24,8 @@ def deploy(*args):
         migrate()
     if 'nginx' in args or 'all' in args:
         restart_nginx()
+    if 'supervisor' in args or 'all' in args:
+        restart_supervisor()
     if 'api' in args or 'all' in args:
         restart_gunicorn()
 
@@ -53,6 +55,10 @@ def migrate():
 
 def restart_nginx():
     sudo('service nginx restart')
+
+
+def restart_supervisor():
+    sudo('service supervisor restart')
 
 
 def restart_gunicorn():

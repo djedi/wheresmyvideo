@@ -3,3 +3,4 @@
 gevent
 gunicorn
 psycopg2
+raven

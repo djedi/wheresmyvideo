@@ -14,4 +14,11 @@ DATABASES = {
 
 INSTALLED_APPS += [
     'gunicorn',
+    'raven.contrib.django.raven_compat',
 ]
+
+# Setnry settings
+RAVEN_CONFIG = {
+    'dsn': 'http://14841332d1f24d79b03c12d2fb65cc70:1a5077a523c244048341381ec20'
+           '8a5ed@redseam.info/10',
+}

@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 import tmdbsimple as tmdb
 
@@ -114,7 +113,8 @@ class MediaType(models.Model):
     Types of media/location such as DVD, Amazon Prime, iTunes, etc.
     """
     name = models.CharField(max_length=100)
-    users = models.ManyToManyField(User, blank=True, null=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -129,7 +129,7 @@ class Genre(models.Model):
 
 
 class UserMovie(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     movie = models.ForeignKey(Movie)
     media_types = models.ManyToManyField(MediaType, blank=True, null=True)
 

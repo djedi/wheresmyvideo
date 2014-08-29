@@ -5,3 +5,4 @@ django-registration
 django-rest-auth
 djangorestframework
 ipython
+psycopg2

@@ -10,22 +10,22 @@ server {
     # for requests to these domains
     server_name wheresmyvideo.com whereismyvideo.com www.wheresmyvideo.com www.whereismyvideo.com;
  
-    # look in this directory for files to serve
-    root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
-    index index.html;
+    location / {
+        root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
+        index index.html;
+
+        # keep logs in these files
+        access_log /var/log/nginx/wmv.access.log;
+        error_log /var/log/nginx/wmv.error.log;
+
+        # whatever static doesn't catch, send to django
+        try_files $uri @gunicorn;
+    }
 
     location /static {
         root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static;
     }
 
-    # keep logs in these files
-    access_log /var/log/nginx/wmv.access.log;
-    error_log /var/log/nginx/wmv.error.log;
-
-    # whatever static doesn't catch, send to django
-    try_files $uri @gunicorn;
-
-    # rules for gunicorn
     location @gunicorn {
         proxy_pass http://gunicorn;
         proxy_redirect off;

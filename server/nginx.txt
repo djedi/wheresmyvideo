@@ -1,20 +1,36 @@
+upstream gunicorn {
+    server localhost:8000;
+}
+
 # static files
 server {
     # listen on port 80
     listen 80;
  
     # for requests to these domains
-    server_name wheresmyvideo.com www.wheresmyvideo.com;
+    server_name wheresmyvideo.com whereismyvideo.com www.wheresmyvideo.com www.whereismyvideo.com;
  
     # look in this directory for files to serve
     root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
     index index.html;
 
-    location /scripts {
-        autoindex on;
-    }
- 
     # keep logs in these files
     access_log /var/log/nginx/wmv.access.log;
     error_log /var/log/nginx/wmv.error.log;
+
+    # whatever static doesn't catch, send to django
+    try_files $uri @gunicorn;
+
+    # rules for gunicorn
+    location @gunicorn {
+        proxy_pass http://gunicorn;
+        proxy_redirect off;
+
+        # Give django 5 mins to timeout
+        proxy_read_timeout 5m;
+
+        proxy_set_header Host               $host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    }
 }

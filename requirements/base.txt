@@ -4,6 +4,7 @@ django-cors-headers
 django-registration
 django-rest-auth
 djangorestframework
+gevent
 ipython
 psycopg2
 tmdbsimple

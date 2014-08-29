@@ -1,0 +1,5 @@
+-r base.txt
+
+gevent
+gunicorn
+psycopg2

@@ -9,7 +9,7 @@ VIRTUALENV = '/home/ubuntu/.virtualenvs/wmv_env'
 PYTHON = VIRTUALENV + '/bin/python'
 PIP = VIRTUALENV + '/bin/pip'
 MANAGE = SOURCE_ROOT + '/manage.py'
-SETTINGS = '--settings=envelopebudget.settings.base'
+SETTINGS = '--settings=envelopebudget.settings.prod'
 
 env.hosts = ['ubuntu@wheresmyvideo.com']
 

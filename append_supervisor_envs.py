@@ -1,4 +1,7 @@
-f1 = open('server/gunicorn.conf')
+import os
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+f1 = open(os.path.join(this_dir, 'server/gunicorn.conf'))
 gunicorn_conf = f1.read()
 f1.close()
 

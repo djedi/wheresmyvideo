@@ -1,4 +1,4 @@
-import os
+from base import *
 
 
 DATABASES = {

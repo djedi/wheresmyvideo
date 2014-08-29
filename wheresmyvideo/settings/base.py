@@ -29,6 +29,7 @@ TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = [
     'wheresmyvideo.com',
+    'api.wheresmyvideo.com',
     'whereismyvideo.com',
 ]
 

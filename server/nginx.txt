@@ -10,11 +10,6 @@ server {
     # for requests to these domains
     server_name wheresmyvideo.com whereismyvideo.com www.wheresmyvideo.com www.whereismyvideo.com;
 
-    location /static {
-        root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
-        autoindex on;
-    }
-
     location / {
         root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
         index index.html;
@@ -25,6 +20,11 @@ server {
 
         # whatever static doesn't catch, send to django
         try_files $uri @gunicorn;
+    }
+
+    location /static/ {
+        root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static/;
+        autoindex on;
     }
 
     location @gunicorn {

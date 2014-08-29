@@ -14,16 +14,16 @@ router.register(r'user-movies', movie_views.UserMovieViewSet)
 
 urlpatterns = patterns(
     '',
-    # url(r'^$', 'accounts.views.index', name='home'),
+    url(r'^$', 'accounts.views.index', name='home'),
     # url(r'^movies/', include('movies.urls')),
 
     # rest_framework api
-    url(r'^api/v1/', include('accounts.api_urls')),
-    url(r'^api/v1/', include('movies.api_urls')),
-    url(r'^api/v1/', include(router.urls)),
-    url(r'^api/v1/api-auth/', include('rest_framework.urls',
-                                      namespace='rest_framework')),
-    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
+    url(r'^v1/', include('accounts.api_urls')),
+    url(r'^v1/', include('movies.api_urls')),
+    url(r'^v1/', include(router.urls)),
+    url(r'^v1/api-auth/', include('rest_framework.urls',
+                                  namespace='rest_framework')),
+    url(r'^v1/rest-auth/', include('rest_auth.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
 )

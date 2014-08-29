@@ -2,4 +2,4 @@ from django.http import HttpResponseRedirect
 
 
 def index(request):
-    return HttpResponseRedirect('/api/v1/')
+    return HttpResponseRedirect('/v1/')

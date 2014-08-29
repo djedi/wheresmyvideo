@@ -62,4 +62,5 @@ def restart_supervisor():
 
 
 def restart_gunicorn():
+    sudo('{} {}/append_supervisor_envs.py'.format(PYTHON, SOURCE_ROOT))
     sudo('supervisorctl restart gunicorn')

@@ -5,6 +5,7 @@ django-registration
 django-rest-auth
 djangorestframework
 gevent
+gunicorn
 ipython
 psycopg2
 tmdbsimple

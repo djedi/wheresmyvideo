@@ -11,8 +11,14 @@ server {
     server_name wheresmyvideo.com whereismyvideo.com www.wheresmyvideo.com www.whereismyvideo.com;
  
     # look in this directory for files to serve
-    root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
-    index index.html;
+    location / {
+        root /home/ubuntu/wheresmyvideo/simplify/simplify/dist/;
+        index index.html;
+    }
+
+    location /static {
+        root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static;
+    }
 
     # keep logs in these files
     access_log /var/log/nginx/wmv.access.log;

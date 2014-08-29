@@ -14,10 +14,8 @@ DATABASES = {
 INSTALLED_APPS += [
     'django_extensions',
     'debug_toolbar',
-    'corsheaders',
 ]
 
 # for dev, disable CORS & CSRF protection
-MIDDLEWARE_CLASSES.insert(0, 'corsheaders.middleware.CorsMiddleware')
 MIDDLEWARE_CLASSES.append('common.middleware.DisableCSRF')
 CORS_ORIGIN_ALLOW_ALL = True

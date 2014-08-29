@@ -24,6 +24,7 @@ server {
 
     location /static {
         root /home/ubuntu/wheresmyvideo/wheresmyvideo/collected_static;
+        autoindex on;
     }
 
     location @gunicorn {

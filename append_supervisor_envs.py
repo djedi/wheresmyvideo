@@ -5,7 +5,7 @@ f1 = open(os.path.join(this_dir, 'server/gunicorn.conf'))
 gunicorn_conf = f1.read()
 f1.close()
 
-f2 = open(os.path.join(os.path.dirname(this_dir), 'environement'))
+f2 = open(os.path.join(os.path.dirname(this_dir), 'environment'))
 envs = f2.read()
 f2.close()
 envs = envs.strip().replace('\n', ',')

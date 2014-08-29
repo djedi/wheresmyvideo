@@ -30,6 +30,7 @@ server {
         root /var/www/;
         access_log /var/log/nginx/api.access.log;
         error_log /var/log/nginx/api.error.log;
+        client_max_body_size 0;
         try_files $uri @gunicorn;
     }
 
@@ -47,6 +48,7 @@ server {
 
         # Give django 5 mins to timeout
         proxy_read_timeout 5m;
+        client_max_body_size 0;
 
         proxy_set_header Host               $host;
         proxy_set_header X-Real-IP          $remote_addr;

@@ -5,7 +5,7 @@ MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/'
 if window.location.host == 'wheresmyvideo.com'
     apiRoot = 'http://api.wheresmyvideo.com/v1/'
 else
-    apiRoot = 'http://127.0.0.1:8002/api/v1/'
+    apiRoot = 'http://127.0.0.1:8002/v1/'
 
 angular.module('app.controllers', [])
 
@@ -15,7 +15,12 @@ angular.module('app.controllers', [])
     register: apiRoot + 'rest-auth/register/'
     userDetails: apiRoot + 'user/'
     forgotPassword: apiRoot + 'rest-auth/password/reset/'
-    mediatTypes: apiRoot + 'media-types'
+    mediaTypes: apiRoot + 'media-types/'
+    movieList: apiRoot + 'user-movies/'
+    addTmdb: apiRoot + 'movies/add/tmdb/'
+    setMediaTypes: apiRoot + 'media-types/set/'
+    userMediaTypes: apiRoot + 'media-types/user-set/'
+    updateUserMovieMedia: apiRoot + 'user-movies/update-media-types/'
 })
 
 # overall control

@@ -1,17 +1,12 @@
 'use strict'
 
 TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
-MOVIE_LIST_URL = 'http://127.0.0.1:8002/api/v1/user-movies/'
-ADD_TMDB_MOVIE_URL = 'http://127.0.0.1:8002/api/v1/movies/add/tmdb/'
-SET_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/set/'
-USER_MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/user-set/'
-UPDATE_USER_MOVIE_MEDIA_URL = 'http://127.0.0.1:8002/api/v1/user-movies/update-media-types/'
 
 angular.module('app.videos', [])
 
 .controller('videoListCtrl', [
-    '$scope', '$filter', '$http', '$window', 'AuthService', '$modal', 'logger'
-    ($scope, $filter, $http, $window, AuthService, $modal, logger) ->
+    '$scope', '$filter', '$http', '$window', 'AuthService', '$modal', 'logger', 'API'
+    ($scope, $filter, $http, $window, AuthService, $modal, logger, API) ->
         $scope.videos = []
         $scope.filteredVideos = []
         $scope.searchKeywords = ''
@@ -30,7 +25,7 @@ angular.module('app.videos', [])
         ]
 
         $scope.getMovieList = ->
-            resp = $http.get(MOVIE_LIST_URL, {cache: true})
+            resp = $http.get(API.movieList, {cache: true})
             resp.success((data)->
                 $scope.videos = data
             )
@@ -110,7 +105,7 @@ angular.module('app.videos', [])
                         break
             else
                 user_movie.media_types.push(media_type)
-            $http.put(UPDATE_USER_MOVIE_MEDIA_URL, {id: user_movie.id, media_types: user_movie.media_types})
+            $http.put(API.updateUserMovieMedia, {id: user_movie.id, media_types: user_movie.media_types})
             .success((data)->
                 return
             ).error((err)->
@@ -153,7 +148,7 @@ angular.module('app.videos', [])
                 controller: 'ModalConfirmDelete'
             )
             modalInstance.result.then ((action) ->
-                resp = $http.delete(MOVIE_LIST_URL + user_movie.id + '/')
+                resp = $http.delete(API.movieList + user_movie.id + '/')
                 resp.success(->
                     $scope.videos.splice($scope.videos.indexOf(user_movie), 1)
                     $scope.filteredVideos.splice($scope.filteredVideos.indexOf(user_movie), 1)
@@ -233,11 +228,11 @@ angular.module('app.videos', [])
             )
 
         $scope.addMovie = (tmdb_id, media_type_id)->
-            resp = $http.post(ADD_TMDB_MOVIE_URL, {id: tmdb_id, media_type_id: media_type_id})
+            resp = $http.post(API.addTmdb, {id: tmdb_id, media_type_id: media_type_id})
             resp.success((data) ->
                 logger.logSuccess(data.movie.title + ' added successfully.')
                 $httpDefaultCache = $cacheFactory.get('$http')
-                $httpDefaultCache.remove(MOVIE_LIST_URL)
+                $httpDefaultCache.remove(API.movieList)
             )
             resp.error((err) ->
                 console.log('Error adding movie')
@@ -275,8 +270,8 @@ angular.module('app.videos', [])
 )
 
 .controller('mediaTypesCtrl', [
-    '$scope', '$http', '$window'
-    ($scope, $http, $window) ->
+    '$scope', '$http', '$window', 'API'
+    ($scope, $http, $window, API) ->
         $scope.foo = 'bar'
         $scope.selectedTypeIds = $.parseJSON($window.sessionStorage.media_type_ids)
         $scope.allMediaTypes = $.parseJSON($window.sessionStorage.all_media_types)
@@ -287,7 +282,7 @@ angular.module('app.videos', [])
                 $scope.selectedTypeIds.splice(idx, 1)
             else  # add it to the list
                 $scope.selectedTypeIds.push(id)
-            resp = $http.post(SET_MEDIA_TYPES_URL, {type_ids: $scope.selectedTypeIds})
+            resp = $http.post(API.setMediaTypes, {type_ids: $scope.selectedTypeIds})
             resp.success((data)->)
             resp.error(->
                 console.error('toggleSelection Error')

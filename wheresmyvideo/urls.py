@@ -14,7 +14,7 @@ router.register(r'user-movies', movie_views.UserMovieViewSet)
 
 urlpatterns = patterns(
     '',
-    url(r'^$', 'accounts.views.index', name='home'),
+    # url(r'^$', 'accounts.views.index', name='home'),
     # url(r'^movies/', include('movies.urls')),
 
     # rest_framework api

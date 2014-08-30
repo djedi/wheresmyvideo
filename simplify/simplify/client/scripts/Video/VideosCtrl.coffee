@@ -188,8 +188,8 @@ angular.module('app.videos', [])
 ])
 
 .controller('videoSearchCtrl', [
-    '$scope', 'TmdbService', 'logger', '$http', '$cacheFactory', 'AuthService', '$window'
-    ($scope, TmdbService, logger, $http, $cacheFactory, AuthService, $window) ->
+    '$scope', 'TmdbService', 'logger', '$http', '$cacheFactory', 'AuthService', '$window', 'API'
+    ($scope, TmdbService, logger, $http, $cacheFactory, AuthService, $window, API) ->
         $scope.query = ''
         $scope.searchMsg = null
         $scope.data = {

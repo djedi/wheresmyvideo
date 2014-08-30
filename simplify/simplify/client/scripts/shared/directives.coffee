@@ -2,6 +2,16 @@
 
 angular.module('app.directives', [])
 
+.directive('selectOnClick', ()->
+    return {
+        restrict: 'A',
+        link: (scope, element, attrs) ->
+            element.on('click',  () ->
+                this.select()
+            )
+    }
+)
+
 .directive('imgHolder', [ ->
     return {
         restrict: 'A'

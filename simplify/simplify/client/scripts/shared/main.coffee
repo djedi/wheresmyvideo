@@ -1,11 +1,11 @@
 'use strict';
 
-MEDIA_TYPES_URL = 'http://127.0.0.1:8002/api/v1/media-types/'
-
 if window.location.host == 'wheresmyvideo.com'
     apiRoot = 'http://api.wheresmyvideo.com/v1/'
+    DEV = false
 else
     apiRoot = 'http://127.0.0.1:8002/v1/'
+    DEV = true
 
 angular.module('app.controllers', [])
 
@@ -28,6 +28,7 @@ angular.module('app.controllers', [])
     '$scope', '$rootScope', 'AUTH_EVENTS', 'AuthService', '$location', '$http', '$window', 'API'
     ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $http, $window, API) ->
         $scope.currentUser = AuthService.getName()
+        $scope.DEV = DEV
 
         $scope.setCurrentUser = (user) ->
             $scope.currentUser = user

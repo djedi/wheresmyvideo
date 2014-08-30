@@ -12,8 +12,8 @@
 
 
         <!-- Sample nav -->
-        <li><a href="#/dashboard"> <i class="ti-home"></i><span data-i18n="Dashboard"></span> </a></li>
-        <li>
+        <li ng-if="DEV"><a href="#/dashboard"> <i class="ti-home"></i><span data-i18n="Dashboard"></span> </a></li>
+        <li ng-if="DEV">
             <a href="#/ui"><i class="ti-wand"></i><span data-i18n="UI Kit"></span></a>
             <ul>
                 <li><a href="#/ui/typography"><i class="ti-angle-right"></i><span data-i18n="Typography"></span></a></li>
@@ -29,7 +29,7 @@
                 <li><a href="#/ui/grids"><i class="ti-angle-right"></i><span data-i18n="Grids"></span></a></li>
             </ul>
         </li>
-        <li>
+        <li ng-if="DEV">
             <a href="#/pages"><i class="ti-files"></i><span data-i18n="Pages"></span></a>
             <ul>
                 <li><a href="#/auth/login"><i class="ti-angle-right"></i><span data-i18n="Sign In"></span></a></li>
@@ -42,7 +42,7 @@
                 <li><a href="#/pages/blank"><i class="ti-angle-right"></i><span data-i18n="Blank Page"></span></a></li>
             </ul>
         </li>
-        <li>
+        <li ng-if="DEV">
             <a href="#/table"><i class="ti-layout-grid4"></i><span data-i18n="Tables"></span></a>
             <ul>
                 <li><a href="#/tables/static"><i class="ti-angle-right"></i><span data-i18n="Static Tables"></span></a></li>
@@ -50,7 +50,7 @@
                 <li><a href="#/tables/dynamic"><i class="ti-angle-right"></i><span data-i18n="Dynamic Tables"></span></a></li>
             </ul>
         </li>
-        <li>
+        <li ng-if="DEV">
             <a href="#/form"><i class="ti-pencil"></i><span data-i18n="Forms"></span></a>
             <ul>
                 <li><a href="#/forms/layouts"><i class="ti-angle-right"></i><span data-i18n="Form Layouts"></span></a></li>
@@ -59,7 +59,7 @@
                 <li><a href="#/forms/wizard"><i class="ti-angle-right"></i><span data-i18n="Form Wizard"></span></a></li>
             </ul>
         </li>
-        <li>
+        <li ng-if="DEV">
             <a href="#/charts"><i class="ti-bar-chart"></i><span data-i18n="Charts"></span></a>
             <ul>
                 <li><a href="#/charts/flot"><i class="ti-angle-right"></i>Flot <span data-i18n="Charts"></span></a></li>
@@ -67,14 +67,14 @@
                 <li><a href="#/charts/charts"><i class="ti-angle-right"></i>Other <span data-i18n="Charts"></span></a></li>
             </ul>
         </li>
-        <li class="nav-task">
+        <li class="nav-task" ng-if="DEV">
             <a href="#/tasks/tasks">
                 <i class="ti-check-box"></i><span data-i18n="Tasks"></span>
                 <span class="badge badge-danger main-badge"
                       data-ng-show="taskRemainingCount > 0">{{taskRemainingCount}}</span>
             </a>
         </li>
-        <li>
+        <li ng-if="DEV">
             <a href="#/mail"><i class="ti-email"></i><span data-i18n="Mail"></span></a>
             <ul>
                 <li><a href="#/mail/inbox"><i class="ti-angle-right"></i><span data-i18n="Inbox"></span></a></li>

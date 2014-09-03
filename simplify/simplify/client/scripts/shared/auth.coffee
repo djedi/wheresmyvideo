@@ -53,16 +53,20 @@ angular.module('app.auth', [])
         resp = $http.get(API.logout)
         resp.success((data)->
             logger.logSuccess(data.success)
-            $window.sessionStorage.clear()
-            $rootScope.$broadcast(AUTH_EVENTS.userSet)
-            $httpDefaultCache = $cacheFactory.get('$http')
-            $httpDefaultCache.removeAll()
+            authService.clearSession()
         )
         resp.error((data)->
             console.debug('LOG OUT ERROR')
-            console.debut(data)
+            console.debug(data)
+            authService.clearSession()
         )
         return resp
+
+    authService.clearSession = () ->
+        $window.sessionStorage.clear()
+        $rootScope.$broadcast(AUTH_EVENTS.userSet)
+        $httpDefaultCache = $cacheFactory.get('$http')
+        $httpDefaultCache.removeAll()
 
     authService.getUser = ->
         resp = $http.get(API.userDetails, {cache: true})

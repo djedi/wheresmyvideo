@@ -177,6 +177,12 @@ angular.module('app.auth', [])
             resp.error(->
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed)
             )
+
+        init = ->
+            if AuthService.isAuthenticated
+                $location.path('/')
+        init()
+        return
 ])
 
 .controller('ForgotPasswordCtrl', [

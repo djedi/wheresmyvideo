@@ -1,7 +1,6 @@
-Django==1.7c3
-
+Django==1.7.1
 django-cors-headers
-django-registration
+django-registration-redux
 django-rest-auth
 djangorestframework
 ipython

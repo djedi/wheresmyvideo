@@ -179,7 +179,7 @@ angular.module('app.auth', [])
             )
 
         init = ->
-            if AuthService.isAuthenticated
+            if AuthService.isAuthenticated()
                 $location.path('/')
         init()
         return

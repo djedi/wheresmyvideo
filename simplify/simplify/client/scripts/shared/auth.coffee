@@ -97,6 +97,9 @@ angular.module('app.auth', [])
     authService.getEmail = ->
         return $window.sessionStorage.email
 
+    authService.getUsername = ->
+        return $window.sessionStorage.username
+
     authService.getSelectedMediaTypeIds = ->
         if $window.sessionStorage.media_type_ids
             return $.parseJSON($window.sessionStorage.media_type_ids)

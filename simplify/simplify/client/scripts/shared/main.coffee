@@ -37,6 +37,7 @@ angular.module('app.controllers', [])
             $scope.currentUser = AuthService.getName()
             $scope.main.name = AuthService.getName()
             $scope.main.email = AuthService.getEmail()
+            $scope.main.username = AuthService.getUsername()
             $scope.main.selectedMediaTypeIds = AuthService.getSelectedMediaTypeIds()
         )
 

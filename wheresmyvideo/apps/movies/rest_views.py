@@ -32,7 +32,12 @@ class MediaTypeViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny, )
 
     def get_queryset(self):
-        user_id = self.request.GET.get('user', None)
+        user_model = get_user_model()
+        if 'username' in self.request.GET:
+            user = user_model.objects.get(username=self.request.GET['username'])
+            user_id = user.id
+        else:
+            user_id = self.request.GET.get('user', None)
         qs = models.MediaType.objects.all()
         if user_id:
             qs = qs.filter(users__id=user_id)

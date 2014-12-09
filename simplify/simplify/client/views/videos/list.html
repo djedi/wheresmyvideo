@@ -65,10 +65,12 @@
                                         'btn-default': !inMediaType(mt.id, um),
                                         'btn-primary': inMediaType(mt.id, um)
                                         }"
-                                    ng-click="toggleMediaType(um, mt)">{{ mt.name }}</button>
+                                    ng-click="toggleMediaType(um, mt)"
+                                    ng-disabled="publicReadOnly"
+                                    >{{ mt.name }}</button>
                         </span><br>
                         </p>
-                        <p class="text-right">
+                        <p class="text-right" ng-if="!publicReadOnly">
                             <button type="button" class="btn btn-xs btn-danger" ng-click="deleteMovie(um)"><i class="ti-trash"></i></button>
                         </p>
                     </td>

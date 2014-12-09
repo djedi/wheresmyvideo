@@ -1,6 +1,8 @@
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import models
@@ -27,6 +29,7 @@ def add_movie_by_tmdb_id(request):
 class MediaTypeViewSet(viewsets.ModelViewSet):
     queryset = models.MediaType.objects.all().order_by('name')
     serializer_class = serializers.MediaTypeSerializer
+    permission_classes = (AllowAny, )
 
     def get_queryset(self):
         user_id = self.request.GET.get('user', None)
@@ -55,9 +58,15 @@ class UserMovieViewSet(viewsets.ModelViewSet):
     queryset = models.UserMovie.objects.select_related(
         'movie', 'media_types').all()
     serializer_class = serializers.UserMovieSerializer
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
-        queryset = self.queryset.filter(user=self.request.user)
+        user_model = get_user_model()
+        if 'username' in self.request.GET:
+            user = user_model.objects.get(username=self.request.GET['username'])
+            queryset = self.queryset.filter(user=user)
+        else:
+            queryset = self.queryset.filter(user=self.request.user)
         return queryset.order_by('movie__title')
 
 

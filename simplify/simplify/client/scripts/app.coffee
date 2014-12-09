@@ -65,6 +65,7 @@ angular.module('app', [
         )
         $routeProvider
             .when('/', { redirectTo: '/videos/list'} )
+            .when('/public/:username', { templateUrl: 'views/videos/list.html', controller: 'videoListCtrl'})
             .when('/404', { templateUrl: 'views/pages/404.html'} )
             .otherwise( redirectTo: '/404' )
 ])

@@ -5,8 +5,10 @@ TMDB_API_KEY = 'a130bee5ca0cad68fc6faf0d00a09217'
 angular.module('app.videos', [])
 
 .controller('videoListCtrl', [
-    '$scope', '$filter', '$http', '$window', 'AuthService', '$modal', 'logger', 'API'
-    ($scope, $filter, $http, $window, AuthService, $modal, logger, API) ->
+    '$scope', '$filter', '$http', '$window', '$routeParams', 'AuthService', '$modal', 'logger', 'API'
+    ($scope, $filter, $http, $window, $routeParams, AuthService, $modal, logger, API) ->
+        $scope.publicReadOnly = false
+        $scope.username = null
         $scope.videos = []
         $scope.filteredVideos = []
         $scope.searchKeywords = ''
@@ -25,7 +27,10 @@ angular.module('app.videos', [])
         ]
 
         $scope.getMovieList = ->
-            resp = $http.get(API.movieList, {cache: true})
+            resp = $http.get(API.movieList, {
+                cache: true,
+                params: {username: $scope.username},
+            })
             resp.success((data)->
                 $scope.videos = data
             )
@@ -81,13 +86,26 @@ angular.module('app.videos', [])
             if $window.sessionStorage.media_types
                 $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
             else
-                resp = AuthService.getUser()
-                resp.success(->
-                    $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
-                )
-                resp.error(->
-                    console.error('error getting user data')
-                )
+                if $scope.publicReadOnly
+                    # get this user's media types
+                    resp = $http.get(API.mediaTypes, {
+                        cache: true,
+                        params: {username: $scope.username}
+                    })
+                    resp.success((data) ->
+                        $scope.userMediaTypes = data
+                    )
+                    resp.error( ->
+                        console.error('error getting media types')
+                    )
+                else
+                    resp = AuthService.getUser()
+                    resp.success(->
+                        $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
+                    )
+                    resp.error(->
+                        console.error('error getting user data')
+                    )
 
 
         $scope.inMediaType = (id, user_movie) ->
@@ -165,6 +183,9 @@ angular.module('app.videos', [])
 
         # init
         init = ->
+            if $routeParams.username
+                $scope.username = $routeParams.username
+                $scope.publicReadOnly = true
             resp = $scope.getMovieList()
             resp.success(->
                 $scope.search()

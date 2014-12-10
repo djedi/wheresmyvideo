@@ -26,6 +26,13 @@
                     </div>
                 </div>
             </div>
+            <div class="row media-type-filter">
+                <div class="col-sm-12 col=xs-12">
+                    <div class="btn-group btn-group-justified">
+                        <a ng-repeat="mt in userMediaTypes" role="button" class="btn" ng-class="mt.class" ng-click="toggleMediaTypeFilter(mt)">{{ mt.name }}</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <table class="table table-bordered table-striped table-responsive">

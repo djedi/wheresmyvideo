@@ -85,6 +85,7 @@ angular.module('app.videos', [])
         $scope.getUserMediaTypes = ->
             if $window.sessionStorage.media_types
                 $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
+                addMediaTypeMeta()
             else
                 if $scope.publicReadOnly
                     # get this user's media types
@@ -94,6 +95,7 @@ angular.module('app.videos', [])
                     })
                     resp.success((data) ->
                         $scope.userMediaTypes = data
+                        addMediaTypeMeta()
                     )
                     resp.error( ->
                         console.error('error getting media types')
@@ -102,11 +104,16 @@ angular.module('app.videos', [])
                     resp = AuthService.getUser()
                     resp.success(->
                         $scope.userMediaTypes = $.parseJSON($window.sessionStorage.media_types)
+                        addMediaTypeMeta()
                     )
                     resp.error(->
                         console.error('error getting user data')
                     )
 
+        addMediaTypeMeta = ->
+            for mt in $scope.userMediaTypes
+                mt.on = true
+                mt.class = 'btn-primary'
 
         $scope.inMediaType = (id, user_movie) ->
             for mt in user_movie.media_types
@@ -157,6 +164,24 @@ angular.module('app.videos', [])
                 if !value.rating
                     return $scope.ratings[6].on
                 return true
+            )
+            $scope.onFilterChange()
+
+        $scope.toggleMediaTypeFilter = (mediaType) ->
+            if mediaType.on
+                mediaType.on = false
+                mediaType.class = 'btn-default'
+            else
+                mediaType.on = true
+                mediaType.class = 'btn-primary'
+            activeMediaIds = []
+            for mt in $scope.userMediaTypes
+                if mt.on
+                    activeMediaIds.push(mt.id)
+            $scope.filteredVideos = $filter('filter')($scope.videos, (value) ->
+                for mt in value.media_types
+                    if mt.id in activeMediaIds
+                        return true
             )
             $scope.onFilterChange()
 

@@ -75,7 +75,7 @@
                     <td>
                         <h3>{{ video.title }}</h3><br>
                         <span ng-repeat="mt in userMediaTypes">
-                            <button class="btn btn-xs btn-default" ng-click="addMovie(video.id, mt.id)"><i class="ti-plus"></i>{{ mt.name }}</button>
+                            <button class="btn btn-xs btn-default" ng-class="{'btn-primary': hasVideo(video.id, mt.id)}" ng-disabled="hasVideo(video.id, mt.id)" ng-click="addMovie(video.id, mt.id)"><i class="ti-plus"></i>{{ mt.name }}</button>
                         </span>
                     </td>
                     <td>{{ video.release_date }}</td>

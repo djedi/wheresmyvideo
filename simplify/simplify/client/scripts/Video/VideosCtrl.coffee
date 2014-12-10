@@ -220,6 +220,8 @@ angular.module('app.videos', [])
         $scope.currentPage = 1
         $scope.RESULTS_PER_PAGE = 20  # tmdb constant, can't really change this
         $scope.userMediaTypes = []
+        $scope.ownedVideos = []
+        $scope.videoMediaTypes = {}
 
         $scope.search = (query) ->
             if query
@@ -265,8 +267,28 @@ angular.module('app.videos', [])
                 if type.id in ids
                     $scope.userMediaTypes.push(type)
 
+
+        getMovieList = ->
+            resp = $http.get(API.movieList, {
+                cache: true,
+            })
+            resp.success (data) ->
+                $scope.ownedVideos = data
+                for vid in data
+                    $scope.videoMediaTypes[vid.movie.tmdb_id] = {}
+                    for mt in vid.media_types
+                        $scope.videoMediaTypes[vid.movie.tmdb_id][mt.id] = true
+            resp.error (err) ->
+                console.log(err)
+
+
+        $scope.hasVideo = (movieId, mediaTypeId) ->
+            try return $scope.videoMediaTypes[movieId][mediaTypeId]
+            return false
+
         init = ->
             $scope.getUserMediaTypes()
+            getMovieList()
         init()
 ])
 
